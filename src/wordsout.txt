@@ -1,0 +1,14 @@
+amat.um              VPAR   1 1 NOM S N PERF PASSIVE PPL
+amat.um              VPAR   1 1 VOC S N PERF PASSIVE PPL
+amat.um              VPAR   1 1 ACC S M PERF PASSIVE PPL
+amat.um              VPAR   1 1 ACC S N PERF PASSIVE PPL
+amat.um              SUPINE 1 1 ACC S N                 
+amo, amare, amavi, amatus  V (1st)   [XXXAO]  
+love, like; fall in love with; be fond of; have a tendency to;
+amat.um              ADJ    1 1 NOM S N POS             
+amat.um              ADJ    1 1 VOC S N POS             
+amat.um              ADJ    1 1 ACC S M POS             
+amat.um              ADJ    1 1 ACC S N POS             
+amatus, amata, amatum  ADJ   [XXXEO]    uncommon
+loved, beloved;
+*

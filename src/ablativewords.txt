@@ -1,0 +1,24 @@
+ABLATIVE OF TIME
+year
+hour
+day
+night
+month
+time
+ age,
+age;
+summer
+spring
+winter
+sleep
+delay
+
+ABLATIVE OF PLACE
+place, territory
+
+ABLATIVE OF DEGREE OF DIFFERENCE
+somewhat
+little
+small
+much
+many

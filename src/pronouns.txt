@@ -1,0 +1,1058 @@
+qui NOM S M
+cuius GEN S M
+cui DAT S M
+quem ACC S M
+quo ABL S M
+quae NOM S F
+cuius GEN S F
+cui DAT S F
+quam ACC S F
+qua ABL S F
+quod NOM S N
+cuius GEN S N
+cui DAT S N
+quod ACC S N
+quo ABL S N
+qui NOM P M
+quorum GEN P M
+quibus DAT P M
+quos ACC P M
+quibus ABL P M
+quae NOM P F
+quarum GEN P F
+quibus DAT P F
+quas ACC P F
+quibus ABL P F
+quae NOM P N
+quorum GEN P N
+quibus DAT P N
+quae ACC P N
+quibus ABL P N
+qui, quae, quod, N
+who, which, what; who, which, that
+
+quibuscum ABL P M
+quibuscum ABL P F
+quibuscum ABL P N
+quibus N
+whom
+
+
+idem NOM S M
+eiusdem GEN S M
+eidem DAT S M
+eundem ACC S M
+eodem ABL S M
+eadem NOM S F
+eiusdem GEN S F
+eidem DAT S F
+eandem ACC S F
+eadem ABL S F
+idem NOM S N
+eiusdem GEN S N
+eidem DAT S N
+idem ACC S N
+eodem ABL S N
+eidem NOM P M
+idem NOM P M
+eorundem GEN P M
+eisdem DAT P M
+isdem DAT P M
+eosdem ACC P M
+eisdem ABL P M
+isdem ABL P M
+eaedem NOM P F
+earundem GEN P F
+eisdem DAT P F
+isdem DAT P F
+easdem ACC P F
+eisdem ABL P F
+isdem ABL P F
+eadem NOM P N
+eorundem GEN P N
+eisdem DAT P N
+isdem DAT P M
+eadem ACC P N
+eisdem ABL P N
+isdem ABL P N
+idem, eadem, idem, ADJ
+the same
+
+unumquemque
+them all
+
+unicuique
+each and every person
+
+uniuscuiusque
+unaquaeque
+each and every thing
+
+quidam NOM S M
+cuiusdam GEN S M
+cuidam DAT S M
+quemdam ACC S M
+quodam ABL S M
+quaedam NOM S F
+cuiusdam GEN S F
+cuidam DAT S F
+quamdam ACC S F
+quadam ABL S F
+quoddam NOM S N
+cuiusdam GEN S N
+cuidam DAT S N
+quoddam ACC S N
+quodam ABL S N
+quidam NOM P M
+quorumdam GEN P M
+quibusdam DAT P M
+quosdam ACC P M
+quibusdam ABL P M
+quaedam NOM P F
+quarumdam GEN P F
+quibusdam DAT P F
+quasdam ACC P F
+quibusdam ABL P F
+quaedam NOM P N
+quorumdam GEN P N
+quibusdam DAT P N
+quaedam ACC P N
+quibusdam ABL P N
+quidam, quaedam, quiddam, ADJ
+certain; someone, something
+
+quilibet NOM S M
+cuiuslibet GEN S M
+cuilibet DAT S M
+quemlibet ACC S M
+quolibet ABL S M
+quaelibet NOM S F
+cuiuslibet GEN S F
+cuilibet DAT S F
+quamlibet ACC S F
+qualibet ABL S F
+quodlibet NOM S N
+cuiuslibet GEN S N
+cuilibet DAT S N
+quodlibet ACC S N
+quolibet ABL S N
+quilibet NOM P M
+quorumlibet GEN P M
+quibuslibet DAT P M
+quoslibet ACC P M
+quibuslibet ABL P M
+quaelibet NOM P F
+quarumlibet GEN P F
+quibuslibet DAT P F
+quaslibet ACC P F
+quibuslibet ABL P F
+quaelibet NOM P N
+quorumlibet GEN P N
+quibuslibet DAT P N
+quaelibet ACC P N
+quibuslibet ABL P N
+quilibet, quaelibet, quodlibet, ADJ
+any (one)
+
+quiviscumque NOM S M
+cuiusviscumque GEN S M
+cuiviscumque DAT S M
+quemviscumque ACC S M
+quoviscumque ABL S M
+quaeviscumque NOM S F
+cuiusviscumque GEN S F
+cuiviscumque DAT S F
+quamviscumque ACC S F
+quaviscumque ABL S F
+quodviscumque NOM S N
+cuiusviscumque GEN S N
+cuiviscumque DAT S N
+quodviscumque ACC S N
+quoviscumque ABL S N
+quiviscumque NOM P M
+quorumviscumque GEN P M
+quibusviscumque DAT P M
+quosviscumque ACC P M
+quibusviscumque ABL P M
+quaeviscumque NOM P F
+quarumviscumque GEN P F
+quibusviscumque DAT P F
+quasviscumque ACC P F
+quibusviscumque ABL P F
+quaeviscumque NOM P N
+quorumviscumque GEN P N
+quibusviscumque DAT P N
+quaeviscumque ACC P N
+quibusviscumque ABL P N
+quiviscumque, quaeviscumque, quodviscumque, ADJ
+who you will, what you will
+
+quivis NOM S M
+cuiusvis GEN S M
+cuivis DAT S M
+quemvis ACC S M
+quovis ABL S M
+quaevis NOM S F
+cuiusvis GEN S F
+cuivis DAT S F
+quamvis ACC S F
+quavis ABL S F
+quodvis NOM S N
+cuiusvis GEN S N
+cuivis DAT S N
+quodvis ACC S N
+quovis ABL S N
+quivis NOM P M
+quorumvis GEN P M
+quibusvis DAT P M
+quosvis ACC P M
+quibusvis ABL P M
+quaevis NOM P F
+quarumvis GEN P F
+quibusvis DAT P F
+quasvis ACC P F
+quibusvis ABL P F
+quaevis NOM P N
+quorumvis GEN P N
+quibusvis DAT P N
+quaevis ACC P N
+quibusvis ABL P N
+quivis quaevis, quidvis, ADJ
+whoever you will, whatever you will
+
+quicumque NOM S M
+cuiuscumque GEN S M
+cuicumque DAT S M
+quemcumque ACC S M
+quocumque ABL S M
+quaecumque NOM S F
+cuiuscumque GEN S F
+cuicumque DAT S F
+quamcumque ACC S F
+quacumque ABL S F
+quodcumque NOM S N
+cuiuscumque GEN S N
+cuicumque DAT S N
+quodcumque ACC S N
+quocumque ABL S N
+quicumque NOM P M
+quorumcumque GEN P M
+quibuscumque DAT P M
+quoscumque ACC P M
+quibuscumque ABL P M
+quaecumque NOM P F
+quarumcumque GEN P F
+quibuscumque DAT P F
+quascumque ACC P F
+quibuscumque ABL P F
+quaecumque NOM P N
+quorumcumque GEN P N
+quibuscumque DAT P N
+quaecumque ACC P N
+quibuscumque ABL P N
+quicumque, quaecumque, quodcumque, ADJ
+whoever, whatever; whosoever, whatsoever
+
+ecqui NOM S M
+eccuius GEN S M
+eccui DAT S M
+ecquem ACC S M
+ecquo ABL S M
+ecquae NOM S F
+eccuius GEN S F
+eccui DAT S F
+ecquam ACC S F
+ecqua ABL S F
+ecquod NOM S N
+eccuius GEN S N
+eccui DAT S N
+ecquod ACC S N
+ecquo ABL S N
+ecqui NOM P M
+ecquorum GEN P M
+ecquibus DAT P M
+ecquos ACC P M
+ecquibus ABL P M
+ecquae NOM P F
+ecquarum GEN P F
+ecquibus DAT P F
+ecquas ACC P F
+ecquibus ABL P F
+ecquae NOM P N
+ecquorum GEN P N
+ecquibus DAT P N
+ecquae ACC P N
+ecquibus ABL P N
+ecqui, ecquae, ecquod ADJ
+any, anyone
+
+quicquam NOM S N
+cuiusquam GEN S N
+cuiquam DAT S N
+quicquam ACC S N
+quoquam ABL S N
+quicquam VOC S N
+quisquam NOM S M
+cuiusquam GEN S M
+cuiquam DAT S M
+quemquam ACC S M
+quoquam ABL S M
+quaquam NOM S F
+cuiusquam GEN S F
+cuiquam DAT S F
+quamquam ACC S F
+quaquam ABL S F
+quidquam NOM S N
+cuiusquam GEN S N
+cuiquam DAT S N
+quidquam ACC S N
+quoquam ABL S N
+quiquam NOM P M
+quorumquam GEN P M
+quibusquam DAT P M
+quosquam ACC P M
+quibusquam ABL P M
+quaequam NOM P F
+quarumquam GEN P F
+quibusquam DAT P F
+quasquam ACC P F
+quibusquam ABL P F
+quaequam NOM P N
+quorumquam GEN P N
+quibusquam DAT P N
+quaequam ACC P N
+quibusquam ABL P N
+quisquam, quaequam, quidquam, N
+anyone, anything
+
+uterque NOM S M
+utriusque GEN S M
+utrique DAT S M
+utrumque ACC S M
+utroque ABL S M
+uterque VOC S M
+utraque NOM S F
+utriusque GEN S F
+utrique DAT S F
+utramque ACC S F
+utraque ABL S F
+utraque VOC S F
+utrumque NOM S N
+utriusque GEN S N
+utrique DAT S N
+utrumque ACC S N
+utroque ABL S N
+utrumque VOC S N
+utrique NOM P M
+utrorumque GEN P M
+utrisque DAT P M
+utrosque ACC P M
+utrisque ABL P M
+utrique VOC P M
+utraeque NOM P F
+utrarumque GEN P F
+utrisque DAT P F
+utrasque ACC P F
+utrisque ABL P F
+utraeque VOC P F
+utraeque NOM P N
+utrorumque GEN P N
+utrisque DAT P N
+utraeque ACC P N
+utrisque ABL P N
+utraque VOC P N
+uterque, utraque, utrumque, ADJ
+each, one and the other
+
+utervis NOM S M
+utriusvis GEN S M
+utrivis DAT S M
+utrumvis ACC S M
+utrovis ABL S M
+utervis VOC S M
+utravis NOM S F
+utriusvis GEN S F
+utrivis DAT S F
+utramvis ACC S F
+utravis ABL S F
+utravis VOC S F
+utrumvis NOM S N
+utriusvis GEN S N
+utrivis DAT S N
+utrumvis ACC S N
+utrovis ABL S N
+utrumvis VOC S N
+utrivis NOM P M
+utrorumvis GEN P M
+utrisvis DAT P M
+utrosvis ACC P M
+utrisvis ABL P M
+utrivis VOC P M
+utraevis NOM P F
+utrarumvis GEN P F
+utrisvis DAT P F
+utrasvis ACC P F
+utrisvis ABL P F
+utraevis VOC P F
+utraevis NOM P N
+utrorumvis GEN P N
+utrisvis DAT P N
+utraevis ACC P N
+utrisvis ABL P N
+utravis VOC P N
+utervis, utravis, utrumvis, ADJ
+whichever of the two you want, whomever of the two you want
+
+quis NOM S M
+cuius GEN S M
+cui DAT S M
+quem ACC S M
+quo ABL S M
+quis NOM S F
+cuius GEN S F
+cui DAT S F
+quem ACC S F
+qua ABL S F
+quid NOM S N
+cuius GEN S N
+cui DAT S N
+quid ACC S N
+quo ABL S N
+qui NOM P M
+quorum GEN P M
+quibus DAT P M
+quos ACC P M
+quibus ABL P M
+quae NOM P F
+quarum GEN P F
+quibus DAT P F
+quas ACC P F
+quibus ABL P F
+quae NOM P N
+quorum GEN P N
+quibus DAT P N
+quae ACC P N
+quibus ABL P N
+quis, quis, quid, N
+who, what
+
+aliquis NOM S M
+alicuius GEN S M
+alicui DAT S M
+aliquem ACC S M
+aliquo ABL S M
+aliquis NOM S F
+alicuius GEN S F
+alicui DAT S F
+aliquem ACC S F
+aliqua ABL S F
+aliquid NOM S N
+alicuius GEN S N
+alicui DAT S N
+aliquid ACC S N
+aliquo ABL S N
+aliqui NOM P M
+aliquorum GEN P M
+aliquibus DAT P M
+aliquos ACC P M
+aliquibus ABL P M
+aliquae NOM P F
+aliquarum GEN P F
+aliquibus DAT P F
+aliquas ACC P F
+aliquibus ABL P F
+aliquae NOM P N
+aliquorum GEN P N
+aliquibus DAT P N
+aliquae ACC P N
+aliquibus ABL P N
+aliquis, aliquis, aliquid, N
+someone, something; anyone, anything
+
+ecquis NOM S M
+eccuius GEN S M
+eccui DAT S M
+ecquem ACC S M
+ecquo ABL S M
+ecquis NOM S F
+eccuius GEN S F
+eccui DAT S F
+ecquem ACC S F
+ecqua ABL S F
+ecquid NOM S N
+eccuius GEN S N
+eccui DAT S N
+ecquid ACC S N
+ecquo ABL S N
+ecqui NOM P M
+ecquorum GEN P M
+ecquibus DAT P M
+ecquos ACC P M
+ecquibus ABL P M
+ecquae NOM P F
+ecquarum GEN P F
+ecquibus DAT P F
+ecquas ACC P F
+ecquibus ABL P F
+ecquae NOM P N
+ecquorum GEN P N
+ecquibus DAT P N
+ecquae ACC P N
+ecquibus ABL P N
+ecquis, ecquis, ecquid, N
+is there anyone who
+
+quispiam NOM S M
+cuiuspiam GEN S M
+cuipiam DAT S M
+quempiam ACC S M
+quopiam ABL S M
+quispiam NOM S F
+cuiuspiam GEN S F
+cuipiam DAT S F
+quempiam ACC S F
+quopiam ABL S F
+quidpiam NOM S N
+cuiuspiam GEN S N
+cuipiam DAT S N
+quidpiam ACC S N
+quopiam ABL S N
+quipiam NOM P M
+quorumpiam GEN P M
+quibuspiam DAT P M
+quospiam ACC P M
+quibuspiam ABL P M
+quaepiam NOM P F
+quarumpiam GEN P F
+quibuspiam DAT P F
+quaspiam ACC P F
+quibuspiam ABL P F
+quaepiam NOM P N
+quorumpiam GEN P N
+quibuspiam DAT P N
+quaepiam ACC P N
+quibuspiam ABL P N
+quispiam, quispiam, quidpiam, N
+anybody, anything; somebody, something
+
+quisque NOM S M
+cuiusque GEN S M
+cuique DAT S M
+quemque ACC S M
+quoque ABL S M
+quisque NOM S F
+cuiusque GEN S F
+cuique DAT S F
+quemque ACC S F
+quaque ABL S F
+quidque NOM S N
+cuiusque GEN S N
+cuique DAT S N
+quidque ACC S N
+quoque ABL S N
+quique NOM P M
+quorumque GEN P M
+quibusque DAT P M
+quosque ACC P M
+quibusque ABL P M
+quaeque NOM P F
+quarumque GEN P F
+quibusque DAT P F
+quasque ACC P F
+quibusque ABL P F
+quaeque NOM P N
+quorumque GEN P N
+quibusque DAT P N
+quaeque ACC P N
+quibusque ABL P N
+quodque NOM S N
+quodque ACC S N
+quaeque NOM S F
+quamque ACC S F
+quoque ABL S F
+quisque, quisque, quidque, N
+anyone; each person, each one
+
+quisquis NOM S M
+cuiuscuius GEN S M
+cuicui DAT S M
+quemquem ACC S M
+quoquo ABL S M
+quis NOM S F
+cuius GEN S F
+cui DAT S F
+quamquam ACC S F
+quaqua ABL S F
+quidquid NOM S N
+cuiuscuius GEN S N
+cuicui DAT S N
+quidquid ACC S N
+quoquo ABL S N
+quiqui NOM P M
+quorumquorum GEN P M
+quibusquibus DAT P M
+quosquos ACC P M
+quibusquibus ABL P M
+quaequae NOM P F
+quarumquarum GEN P F
+quibusquibus DAT P F
+quasquas ACC P F
+quibusquibus ABL P F
+quaequae NOM P N
+quorumquorum GEN P N
+quibusquibus DAT P N
+quaequae ACC P N
+quibusquibus ABL P N
+quisquis, quisquis, quidquid, N
+whoever, whatever
+
+seipse NOM S M
+seipsius GEN S M
+seipsi DAT S M
+seipsum ACC S M
+seipso ABL S M
+seipsa NOM S F
+seipsius GEN S F
+seipsi DAT S F
+seipsam ACC S F
+seipsa ABL S F
+seipsum NOM S N
+seipsius GEN S N
+seipsi DAT S N
+seipsum ACC S N
+seipso ABL S N
+seipsi NOM P M
+seipsorum GEN P M
+seipsis DAT P M
+seipsos ACC P M
+seipsis ABL P M
+seipsae NOM P F
+seipsarum GEN P F
+seipsis DAT P F
+seipsas ACC P F
+seipsis ABL P F
+seipsa NOM P N
+seipsorum GEN P N
+seipsis DAT P N
+seipsa ACC P N
+seipsis ABL P N
+seipse, seipsa, seipsum, N
+he himself, she herself, it itself
+
+illic NOM S M
+illuius GEN S M
+illuic DAT S M
+illunc ACC S M
+illoc ABL S M
+illaec NOM S F
+illuius GEN S F
+illuic DAT S F
+illanc ACC S F
+illac ABL S F
+illoc NOM S N
+illuius GEN S N
+illuic DAT S N
+illoc ACC S N
+illoc ABL S N
+illi NOM P M
+illorum GEN P M
+illis DAT P M
+illos ACC P M
+illis ABL P M
+illae NOM P F
+illarum GEN P F
+illis DAT P F
+illas ACC P F
+illis ABL P F
+illaec NOM P N
+illorum GEN P N
+illis DAT P N
+illaec ACC P N
+illis ABL P N
+illic, illaec, illoc, ADJ
+he, she, it
+
+istic NOM S M
+istuius GEN S M
+istuic DAT S M
+istunc ACC S M
+istoc ABL S M
+istaec NOM S F
+istuius GEN S F
+istuic DAT S F
+istanc ACC S F
+istac ABL S F
+istoc NOM S N
+istuius GEN S N
+istuic DAT S N
+istoc ACC S N
+istoc ABL S N
+isti NOM P M
+istorum GEN P M
+istis DAT P M
+istos ACC P M
+istis ABL P M
+istae NOM P F
+istarum GEN P F
+istis DAT P F
+istas ACC P F
+istis ABL P F
+istaec NOM P N
+istorum GEN P N
+istis DAT P N
+istaec ACC P N
+istis ABL P N
+istic, istaec, istoc, ADJ
+this same, this very; that of yours
+
+ipse NOM S M
+ipsius GEN S M
+ipsi DAT S M
+ipsum ACC S M
+ipso ABL S M
+ipsa NOM S F
+ipsius GEN S F
+ipsi DAT S F
+ipsam ACC S F
+ipsa ABL S F
+ipsum NOM S N
+ipsius GEN S N
+ipsi DAT S N
+ipsum ACC S N
+ipso ABL S N
+ipsi NOM P M
+ipsorum GEN P M
+ipsis DAT P M
+ipsos ACC P M
+ipsis ABL P M
+ipsae NOM P F
+ipsarum GEN P F
+ipsis DAT P F
+ipsas ACC P F
+ipsis ABL P F
+ipsa NOM P N
+ipsorum GEN P N
+ipsis DAT P N
+ipsa ACC P N
+ipsis ABL P N
+ipse, ipsa, ipsum, ADJ
+himself, herself, itself, themselves
+
+iste NOM S M
+istius GEN S M
+isti DAT S M
+istum ACC S M
+isto ABL S M
+ista NOM S F
+istius GEN S F
+isti DAT S F
+istam ACC S F
+ista ABL S F
+istud NOM S N
+istius GEN S N
+isti DAT S N
+istum ACC S N
+isto ABL S N
+isti NOM P M
+istorum GEN P M
+istis DAT P M
+istos ACC P M
+istis ABL P M
+istae NOM P F
+istarum GEN P F
+istis DAT P F
+istas ACC P F
+istis ABL P F
+ista NOM P N
+istorum GEN P N
+istis DAT P N
+ista ACC P N
+istis ABL P N
+iste, ista, istud, ADJ
+that; that of yours
+
+ille NOM S M
+illius GEN S M
+illi DAT S M
+illum ACC S M
+illo ABL S M
+illa NOM S F
+illius GEN S F
+illi DAT S F
+illam ACC S F
+illa ABL S F
+illud NOM S N
+illius GEN S N
+illi DAT S N
+illum ACC S N
+illo ABL S N
+illi NOM P M
+illorum GEN P M
+illis DAT P M
+illos ACC P M
+illis ABL P M
+illae NOM P F
+illarum GEN P F
+illis DAT P F
+illas ACC P F
+illis ABL P F
+illa NOM P N
+illorum GEN P N
+illis DAT P N
+illa ACC P N
+illis ABL P N
+ille, illa, illud, ADJ
+that, those
+
+is NOM S M
+eius GEN S M
+ei DAT S M
+eum ACC S M
+eo ABL S M
+ea NOM S F
+eius GEN S F
+ei DAT S F
+eam ACC S F
+ea ABL S F
+id NOM S N
+eius GEN S N
+ei DAT S N
+eum ACC S N
+eo ABL S N
+ei NOM P M
+eorum GEN P M
+eis DAT P M
+iis DAT P M
+eos ACC P M
+eis ABL P M
+iis ABL P M
+eae NOM P F
+earum GEN P F
+eis DAT P F
+iis DAP P F
+eas ACC P F
+eis ABL P F
+iis ABL P F
+ea NOM P N
+eorum GEN P N
+eis DAT P N
+iis DAT P N
+ea ACC P N
+eis ABL P N
+iis ABL P N
+is, ea, id, N
+he, she, it, they; this, that
+
+hic NOM S M
+huius GEN S M
+huic DAT S M
+hunc ACC S M
+hoc ABL S M
+haec NOM S F
+huius GEN S F
+huic DAT S F
+hanc ACC S F
+hac ABL S F
+hoc NOM S N
+huius GEN S N
+huic DAT S N
+hoc ACC S N
+hoc ABL S N
+hi NOM P M
+horum GEN P M
+his DAT P M
+hos ACC P M
+his ABL P M
+hae NOM P F
+harum GEN P F
+his DAT P F
+has ACC P F 
+his ABL P F
+haec NOM P N
+horum GEN P N
+his DAT P N
+haec ACC P N
+his ABL P N
+hic, haec, hoc, ADJ
+this, these
+
+quisnam NOM S M
+cuiusnam GEN S M
+cuinam DAT S M
+quemnam ACC S M
+quonam ABL S M
+quanam NOM S F
+cuiusnam GEN S F
+cuinam DAT S F
+namnam ACC S F
+quanam ABL S F
+quidnam NOM S N
+cuiusnam GEN S N
+cuinam DAT S N
+quidnam ACC S N
+quonam ABL S N
+quinam NOM P M
+quorumnam GEN P M
+quibusnam DAT P M
+quosnam ACC P M
+quibusnam ABL P M
+quaenam NOM P F
+quarumnam GEN P F
+quibusnam DAT P F
+quasnam ACC P F
+quibusnam ABL P F
+quaenam NOM P N
+quorumnam GEN P N
+quibusnam DAT P N
+quaenam ACC P N
+quibusnam ABL P N
+quisnam, quisnam, quidnam, ADJ
+who, which, what
+
+unusquisque NOM S M
+uniuscuiusque GEN S M
+unicuique DAT S M
+unumquemque ACC S M
+unoquoque ABL S M
+unaquisque NOM S F
+uniuscuiusque GEN S F
+unicuique DAT S F
+unamquemque ACC S F
+unaquaque ABL S F
+unumquidque NOM S N
+uniuscuiusque GEN S N
+unicuique DAT S N
+unumquidque ACC S N
+unoquoque ABL S N
+uniquique NOM P M
+unorumquorumque GEN P M
+unisquibusque DAT P M
+unosquosque ACC P M
+unisquibusque ABL P M
+unaequaeque NOM P F
+unarumquarumque GEN P F
+unisquibusque DAT P F
+unasquasque ACC P F
+unisquibusque ABL P F
+unaquaeque NOM P N
+unorumquorumque GEN P N
+unisquibusque DAT P N
+unaquaeque ACC P N
+unisquibusque ABL P N
+unusquisque, unaquisque, unumquidque, N
+each one; every single one
+
+seipse, seipsius, X, N
+he himself, she herself, it itself, they themselves
+
+tu NOM S C
+tui GEN S C
+tibi DAT S C
+te ACC S C
+te ABL S C
+vos NOM P C
+vestrum GEN P C
+vobis DAT P C
+vos ACC P C
+vobis ABL P C
+tu, tui, C
+you
+
+ego NOM S C
+mei GEN S C
+mihi DAT S C
+me ACC S C
+me ABL S C
+nos NOM P C
+nostrum GEN P C
+nobis DAT P C
+nos ACC P C
+nobis ABL P C
+ego, mei, C
+I, me
+
+quidquid NOM S N
+quicquid NOM S N
+cuiuscuius GEN S N
+cuicui DAT S N
+quidquid ACC S N
+quicquid ACC S N
+quoquo ABL S N
+quicquid VOC S N
+quidquid VOC S N
+quaeque NOM P N
+quorumquorum GEN P N
+quibusquibus DAT P N
+quaequae ACC P N
+quibusquibus ABL P N
+quaequae VOC P N
+quidquid, cuiuscuius, N, N
+whatever
+
+sui GEN S C
+sibi DAT S C
+se ACC S C
+se ABL S C
+sui GEN P C
+sibi DAT P C
+se ACC P C
+sese ACC P C
+se ABL P C
+sese ABL P C
+sui, sibi, C
+himself, herself, itself, themselves
+
+mecum ABL S C
+mecum
+with me
+
+sapsa
+his own, her own, its own
+
+quinam
+who, which, what
+
+quidquidlibet, , n
+whatever it may be
+
+ques, qua
+any (pl)
+
+eosdem
+the very same
+
+egomet
+I myself
+
+vosmet
+yourselves
+
+vobismet
+yourselves
+
+tutemet
+yourself
+
+semet
+himself, herself, itself, oneself
+
+ipsamet
+herself
+
+ipsemet
+himself
+
+meamet
+my very own
+
+mihimet
+to myself
+
+semetipse
+he himself, she herself, it itself
+
+temet
+yourself
+
+tute
+you yourself

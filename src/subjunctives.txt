@@ -1,0 +1,43 @@
+				SUBJUNCTIVE CLAUSES
+  (Indicative)
+J (Jussive/Hortatory) - let him walk/let us walk
+V (Volitive) - may he walk | may he have walked
+P (Potential) - he may walk | he may have walked | he would have walked
+U (Purpose) - so that you may walk | so that you would walk | so that you would have walked
+R (Result) - so good that he walked (sounds IND)
+I (Indirect Q) - That is where he is walking (sounds IND)
+C (Cum clause) - When/since he walked there, she walked (sounds IND)
+O (Concessive) - Although he had walked, he nevertheless walked (sounds IND)
+H (Characteristic) - the man who would walk | the man who would have walked
+D (Deliberative) - Where should I walk | Where could I have walked
+T (Optative) - (would that) he may walk | (would that) he were walking | (would that) he had walked
+  (Conditional) - if (PRES) {should/would} if (IMPF) {were/would} if (PLUP) {had/would have}
+If I should walk, he would | if I were walking, he would walk | if I had walked, he would have
+	3/4, 5/6, 7/8
+F (Fears for the future) - if (PRES) {FUT IND} if (IMPF/PERF) {would}
+	I am afraid that he will walk | I was afraid that he would walk
+  (Fears for the past) - if (main PRES) {has} if (main IMPF/PERF) {had}
+	1 (main PRES) - I am afraid that he has walked
+	2 (main PAST) - I was afraid that he had walked
+
+				PASSIVES
+  (Indicative)
+J (Jussive/Hortatory) - let him be walked/let us be walked | let him have been walked/let us have been walked
+V (Volitive) - may he be walked | may he have been walked
+P (Potential) - he may be walked | he may have been walked | he would have been walked
+U (Purpose) - so that you may be walked | so that you would be walked | so that you would have been walked
+R (Result) - so good that he was walked (sounds IND)
+I (Indirect Q) - That is where he is being walked (sounds IND)
+C (Cum clause) - When/since he was walked there, she walked (sounds IND)
+O (Concessive) - Although he had been walked, he nevertheless walked (sounds IND)
+H (Characteristic) - the man who would be walked | the man who would have been walked
+D (Deliberative) - Where should I be walked | Where could I have been walked
+T (Optative) - (would that) he may be walked | he were being walked | he had been walked
+  (Conditional) - if (PRES) {should/would} if (IMPF) {were/would} if (PLUP) {had/would have}
+If I should be walked, he would | if I were being walked, he would be walked | if I had been walked, he would have
+	3/4, 5/6, 7/8
+F (Fears for the future) - if (PRES) {FUT IND} if (IMPF/PERF) {would}
+	I am afraid that he will be walked | I was afraid that he would be walked
+  (Fears for the past) - if (main PRES) {has} if (main IMPF/PERF) {had}
+	1 (main PRES) - I am afraid that he has been walked
+	2 (main PAST) - I was afraid that he had been walked
