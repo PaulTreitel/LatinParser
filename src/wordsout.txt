@@ -1,14 +1,77 @@
-amat.um              VPAR   1 1 NOM S N PERF PASSIVE PPL
-amat.um              VPAR   1 1 VOC S N PERF PASSIVE PPL
-amat.um              VPAR   1 1 ACC S M PERF PASSIVE PPL
-amat.um              VPAR   1 1 ACC S N PERF PASSIVE PPL
-amat.um              SUPINE 1 1 ACC S N                 
-amo, amare, amavi, amatus  V (1st)   [XXXAO]  
-love, like; fall in love with; be fond of; have a tendency to;
-amat.um              ADJ    1 1 NOM S N POS             
-amat.um              ADJ    1 1 VOC S N POS             
-amat.um              ADJ    1 1 ACC S M POS             
-amat.um              ADJ    1 1 ACC S N POS             
-amatus, amata, amatum  ADJ   [XXXEO]    uncommon
-loved, beloved;
+gall.os              N      2 1 ACC P M                 
+Gallus, Galli  N (2nd) M   [XXFAX]  
+Gaul; the Gauls (pl.);
+gallus, galli  N (2nd) M   [XXXDX]    lesser
+cock, rooster;
+gall.os              ADJ    1 1 ACC P M POS             
+Gallus, Galla, Gallum  ADJ   [XXXCO]  
+Gallic, of Gaul/the Gauls; class of gladiator w/Gallic armor; (also Galatian?);
 *
+ab                   PREP   ABL                         
+ab  PREP  ABL   [XXXAO]  
+by (agent), from (departure, cause, remote origin/time); after (reference);
+
+aquitan.is           ADJ    1 1 DAT P X POS             
+aquitan.is           ADJ    1 1 ABL P X POS             
+Aquitanus, Aquitana, Aquitanum  ADJ   [XXFEO]    uncommon
+of Aquitania  (southwest Gaul/France);
+
+Garumna              N      0 0 X   X X                 
+Assume this is capitalized proper name/abbr, under MODE IGNORE_UNKNOWN_NAME
+
+
+flumen               N      3 2 NOM S N                 
+flumen               N      3 2 VOC S N                 
+flumen               N      3 2 ACC S N                 
+flumen, fluminis  N (3rd) N   [XXXBO]  
+river, stream; any flowing fluid; flood; onrush; [adverso ~ => against current];
+
+a                    N      9 8 X   X M                 
+A., abb.  N M   [XXXCG]  
+Aulus (Roman praenomen); (abb. A./Au.); [Absolvo, Antiquo => free, reject];
+a., abb.  N M   [XXXDG]    lesser
+year; abb. ann./a.; [regnavit a(nnis). XLIIII => he reigned for 44 years];
+a                    PREP   ABL                         
+a  PREP  ABL   [XXXAO]  
+by (agent), from (departure, cause, remote origin/time); after (reference);
+a                    PREP   ACC                         
+a  PREP  ACC   [XXXCO]  
+ante, abb. a.; [in calendar expression a. d. = ante diem => before the day];
+a                    INTERJ                             
+a  INTERJ   [XXXBO]  
+Ah!; (distress/regret/pity, appeal/entreaty, surprise/joy, objection/contempt);
+
+belg.is              N      1 1 LOC P M                 
+belg.is              N      1 1 DAT P M                 
+belg.is              N      1 1 ABL P M                 
+Belga, Belgae  N (1st) M   [XXFCO]  
+Belgae (pl.); (people of N Gaul - in Caesar's Gallic War);
+
+matron.a             N      1 1 NOM S F                 
+matron.a             N      1 1 VOC S F                 
+matron.a             N      1 1 ABL S F                 
+matrona, matronae  N (1st) F   [XXXDX]    lesser
+wife; matron;
+
+et                   CONJ                               
+et  CONJ   [XXXAX]  
+and, and even; also, even;  (et ... et = both ... and);
+
+sequan.a             N      1 1 NOM S M                 
+sequan.a             N      1 1 VOC S M                 
+sequan.a             N      1 1 ABL S M                 
+Sequana, Sequanae  N (1st) M   [XXFDX]    lesser
+Seine, river in N Cen. Gaul - in Caesar's "Gallic War";
+sequan.a             ADJ    1 1 NOM S F POS             
+sequan.a             ADJ    1 1 VOC S F POS             
+sequan.a             ADJ    1 1 ABL S F POS             
+sequan.a             ADJ    1 1 NOM P N POS             
+sequan.a             ADJ    1 1 VOC P N POS             
+sequan.a             ADJ    1 1 ACC P N POS             
+Sequanus, Sequana, Sequanum  ADJ   [XXXDX]    lesser
+of the Sequani, tribe in E. Gaul - in Caesar's "Gallic War";
+
+divid.it             V      3 1 PRES ACTIVE  IND 3 S    
+divido, dividere, divisi, divisus  V (3rd)   [XXXAX]  
+divide; separate, break up; share, distribute; distinguish;
+

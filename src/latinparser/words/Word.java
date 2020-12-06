@@ -1,3 +1,4 @@
+package latinparser.words;
 
 
 import java.util.ArrayList;

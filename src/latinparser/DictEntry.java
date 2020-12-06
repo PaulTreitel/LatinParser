@@ -1,7 +1,10 @@
-
+package latinparser;
 
 
 import java.util.ArrayList;
+
+import latinparser.words.Adjective;
+import latinparser.words.*;
 
 public class DictEntry {
 	
@@ -25,12 +28,9 @@ public class DictEntry {
 		for (String eInput : b) {
 			eInput = eInput.strip();
 			if (!eInput.equals("")) {
-
 				if (eInput.charAt(eInput.length()-1) != ';')
-					dictToWord((eInput+";").split("\n"));
-				else
-					dictToWord(eInput.split("\n"));
-				
+					eInput = eInput + ";";
+				dictToWord(eInput.split("\n"));
 			}
 		}
 		orderEntries();
@@ -102,40 +102,36 @@ public class DictEntry {
 	 */
 	private int addWordToEntry(String[] parts, String mean, String dictCodes) {
 		int x = possible.size();
-		boolean decrease = false;
 		for (int i = 0; i < parts.length; i++) {
-			
 			switch (parts[i]) {
-			case "N":
-				possible.add(new Noun(parts[4].charAt(0), mean, dictCodes));
-				break;
-			case "ADJ":
-				possible.add(new Adjective(mean, dictCodes));
-				break;
-			case "V":
-				possible.add(new Verb(mean, dictCodes));
-				break;
-			case "ADV":
-				possible.add(new Adverb(mean, dictCodes));
-				break;
-			case "PREP":
-				possible.add(new Preposition(mean, dictCodes, parts[i+1]));
-				break;
-			case "INTERJ":
-			case "CONJ":
-				possible.add(new ConjInterj(mean, dictCodes));
-				break;
-			case "NUM":
-				possible.add(new Numeral(mean, dictCodes));
-				break;
+				case "N":
+					possible.add(new Noun(parts[4].charAt(0), mean, dictCodes));
+					break;
+				case "ADJ":
+					possible.add(new Adjective(mean, dictCodes));
+					break;
+				case "V":
+					possible.add(new Verb(mean, dictCodes));
+					break;
+				case "ADV":
+					possible.add(new Adverb(mean, dictCodes));
+					break;
+				case "PREP":
+					possible.add(new Preposition(mean, dictCodes, parts[i+1]));
+					break;
+				case "INTERJ":
+				case "CONJ":
+					possible.add(new ConjInterj(mean, dictCodes));
+					break;
+				case "NUM":
+					possible.add(new Numeral(mean, dictCodes));
+					break;
 			}
 			
-			if ("PACKTACKONPREFIXSUFFIX".contains(parts[i]))
-				decrease = true;
-			
 			if (possible.size() > x) {
-				if (decrease)
+				if ("PACKTACKONPREFIXSUFFIX".contains(parts[i])) {
 					possible.get(possible.size()-1).reduce();
+				}
 				return i;
 			}
 		}

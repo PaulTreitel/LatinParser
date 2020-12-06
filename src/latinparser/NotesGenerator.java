@@ -1,7 +1,11 @@
+package latinparser;
 
 
 
 import java.util.ArrayList;
+
+import latinparser.wordassistant.VerbFinder;
+import latinparser.words.Noun;
 
 /* NOTES GENERATOR METHODS
  *  - String getSingleNotes()

@@ -1,6 +1,11 @@
+package latinparser.wordassistant;
 
 
 import java.util.ArrayList;
+
+import latinparser.DictEntry;
+import latinparser.LatinParser;
+import latinparser.words.Word;
 
 /* VerbFinder
  *  - ArrayList<Integer> getVerbInfo()

@@ -1,6 +1,10 @@
+package latinparser.wordassistant;
 
 
 import java.util.ArrayList;
+import latinparser.words.Preposition;
+import latinparser.DictEntry;
+import latinparser.Utility;
 
 /* PREPOSITION METHODS
  *  - ArrayList<DictEntry> findPrepositionPhrases()

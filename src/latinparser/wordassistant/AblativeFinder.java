@@ -1,9 +1,12 @@
+package latinparser.wordassistant;
 
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import latinparser.DictEntry;
+import latinparser.Utility;
 
 
 /* ABLATIVES TODO update

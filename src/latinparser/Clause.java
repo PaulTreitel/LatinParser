@@ -1,7 +1,12 @@
+package latinparser;
 
 
 
 import java.util.ArrayList;
+import latinparser.wordassistant.AblativeFinder;
+import latinparser.wordassistant.PrepositionFinder;
+import latinparser.wordassistant.VerbFinder;
+import latinparser.words.Word;
 
 public class Clause {
 	

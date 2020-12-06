@@ -1,6 +1,9 @@
+package latinparser.words;
 
 
 import java.util.ArrayList;
+
+import latinparser.LatinParser;
 
 public class Noun implements Word {
 	private ArrayList<String> possForms = new ArrayList<String>();
@@ -14,17 +17,31 @@ public class Noun implements Word {
 		codes = c;
 		gender = g;
 		if (gender == 'P')
+			// P is special gender indicating IGNORE_UNKNOWN_NAME came up
 			addUnknownForms();
 	}
 	
+	/* addPossForm
+	 * takes a String representation of a word form and adds it to the list of possible forms
+	 * ignores Early Latin word forms
+	 */
 	public void addPossForm(String e) {
-		if (e.contains("LOC") && !e.contains("Early")) {
+		if (e.contains("Early")) {
+			return; // ignore Early Latin
+		}
+		if (e.contains("LOC")) {
 			addLOCForm(e);
-			return;
-		} if (e.length() > 38 && !e.contains("Early"))
+		} else if (e.length() > 38) {
+			// TODO more magic numbers
 			possForms.add(e.substring(32, 39));
+		}
 	}
 	
+	/* getFreq
+	 * returns the frequency of the word, reduced by `reduction`
+	 * frequency codes are specified by the WORDS program
+	 * codes are converted into integers, then `reduction` is subtracted off
+	 */
 	public int getFreq() {
 		char x = codes.charAt(4);
 		if (x == 'A') return 6 - reduction;
@@ -35,6 +52,7 @@ public class Noun implements Word {
 		else return 1 - reduction;
 	}
 	
+	// TODO should this stuff be static?
 	public static String translate(String m, String form, String notes) {
 		notes = notes.replaceAll(" SUBST", "");
 		String mean = m.split(";|,|/")[Integer.parseInt(notes.split(" ")[0])].trim();
@@ -96,24 +114,45 @@ public class Noun implements Word {
 			possForms.add(entry.substring(32, 37));
 	}
 	
+	/* canBe
+	 * takes a string and checks if it is in the list of possible word forms
+	 * supports negation where the first character of the string is '!'
+	 * returns the index of a possible matching form if there is one, -1 otherwise
+	 */
 	public int canBe(String f) {
-		for (int i = 0; i < possForms.size(); i++)
-			if (f.charAt(0) != '!' && possForms.get(i).contains(f)) {
+		boolean negated = f.charAt(0) == '!';
+		String absolute_form = f.substring(1); // form without '!'
+		
+		for (int i = 0; i < possForms.size(); i++) {
+			String curr_form = possForms.get(i);
+			if (!negated && curr_form.contains(f)) {
 				return i;
-			} else if (f.charAt(0) == '!' && !possForms.get(i).contains(f.substring(1))) {
+			} else if (negated && !curr_form.contains(absolute_form)) {
 				return i;
 			}
+		}
 		return -1;
 	}
-		
+	
+	/* setPart
+	 * takes a string and removes any possible word forms that do not match
+	 * supports negation where the first character of the string is '!'
+	 */
 	public void setPart(String part) {
-		for (int i = possForms.size()-1; i >= 0; i--)
-			if (part.charAt(0) != '!' && !possForms.get(i).contains(part))
+		boolean negated = part.charAt(0) == '!';
+		String absolute_part = part.substring(1); // part without '!'
+		
+		for (int i = possForms.size()-1; i >= 0; i--) {
+			String curr_form = possForms.get(i);
+			if (!negated && !curr_form.contains(part)) {
 				possForms.remove(i);
-			else if (part.charAt(0) == '!' && possForms.get(i).contains(part.substring(1)))
+			} else if (negated && curr_form.contains(absolute_part)) {
 				possForms.remove(i);
+			}
+		}
 	}
 	
+	// TODO clean up this mess
 	private void addUnknownForms() {
 		String one = meaning.substring(meaning.length()-1);
 		String two = meaning.substring(meaning.length()-2);
