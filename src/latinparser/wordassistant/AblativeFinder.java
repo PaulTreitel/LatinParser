@@ -66,8 +66,8 @@ public class AblativeFinder {
 			d.setClaimed();
 		for (int i = start; i < upTo; i++)
 			for (String part: new String[] {"N", "ADJ", "NUM"})
-			if (dict.get(i).canBe(part) != -1 && dict.get(i).getW(part).canBe("!ABL") != -1)
-				dict.get(i).getW(part).setPart("!ABL");
+			if (dict.get(i).canBe(part) != -1 && dict.get(i).getWord(part).canBe("!ABL") != -1)
+				dict.get(i).getWord(part).setForm("!ABL");
 		return ablatives;
 	}
 		
@@ -77,11 +77,11 @@ public class AblativeFinder {
 		ArrayList<DictEntry> placeTime = new ArrayList<DictEntry>();
 		String[] ablativeWords = getAblativeWords();
 		for (int i = start; i < upTo; i++)
-			if (dict.get(i).canBe("N") != -1 && dict.get(i).getW("N").canBe("ABL") != -1) {
-				String meaning = dict.get(i).getW("N").toString();
+			if (dict.get(i).canBe("N") != -1 && dict.get(i).getWord("N").canBe("ABL") != -1) {
+				String meaning = dict.get(i).getWord("N").toString();
 				if (isAblativeWord(meaning, ablativeWords, use)) {
 					dict.get(i).setPart("N");
-					dict.get(i).getW(0).setPart("ABL");
+					dict.get(i).getWord(0).setForm("ABL");
 					placeTime.add(dict.get(i));
 					placeTime.addAll(u.getAdjectivesFor(dict.get(i)));
 				}
@@ -122,7 +122,7 @@ public class AblativeFinder {
 			if (d.toString().equals("a") || d.toString().equals("ab"))
 				return agents;
 		for (int idx: vIdx)
-			for (String f: dict.get(idx).getW(0).getForms())
+			for (String f: dict.get(idx).getWord(0).getForms())
 				if (f.substring(4, 7).equals(" P ")) {
 					agents.addAll(findCaseFromEnd("ABL"));
 					break;
@@ -137,12 +137,12 @@ public class AblativeFinder {
 		if (containsSumForm())
 			return absolutes;
 		for (int i = start; i < upTo; i++)
-			if (dict.get(i).canBe("V") != -1 && dict.get(i).getW("V").canBe("ABL") != -1) {
+			if (dict.get(i).canBe("V") != -1 && dict.get(i).getWord("V").canBe("ABL") != -1) {
 				dict.get(i).setPart("V");
-				dict.get(i).getW(0).setPart("PPL");
-				dict.get(i).getW(0).setPart("ABL");
+				dict.get(i).getWord(0).setForm("PPL");
+				dict.get(i).getWord(0).setForm("ABL");
 				absolutes.add(dict.get(i));
-				String cng = dict.get(i).getW(0).getF(0).substring(0, 7);
+				String cng = dict.get(i).getWord(0).getForm(0).substring(0, 7);
 				findAbsolutes(absolutes, cng);
 			}
 		return absolutes;
@@ -153,11 +153,11 @@ public class AblativeFinder {
 			p:
 				for (String part: new String[] {"N", "PRON"}) {
 					if (dict.get(a).canBe(part) != -1) {
-						for (String f: dict.get(a).getW(part).getForms())
-							if (!u.checkIfNounAdjUsable(f,cng))
+						for (String f: dict.get(a).getWord(part).getForms())
+							if (!u.nounAdjUsable(f,cng))
 								break p;
 						dict.get(a).setPart(part);
-						dict.get(a).getW(0).setPart(cng.substring(0, cng.length()-2));
+						dict.get(a).getWord(0).setForm(cng.substring(0, cng.length()-2));
 						absolutes.add(dict.get(a));
 						absolutes.addAll(u.getAdjectivesFor(dict.get(a)));
 					}
@@ -174,11 +174,11 @@ public class AblativeFinder {
 		while (idx != -1) {
 			ArrayList<DictEntry> add = findCaseFromEnd("ABL");
 			ablComp.add(dict.get(idx));
-			dict.get(idx).getW(0).setPart("COM");
+			dict.get(idx).getWord(0).setForm("COM");
 			ablComp.addAll(u.getAdjectivesFor(dict.get(idx)));
 			ablComp.addAll(add);
 			for (int i = 1; i < ablComp.size(); i++)
-				ablComp.get(i).getW(0).setPart("ABL");
+				ablComp.get(i).getWord(0).setForm("ABL");
 			idx = canBeComp();
 		}
 		return ablComp;
@@ -186,7 +186,7 @@ public class AblativeFinder {
 	
 	private boolean containsSumForm() {
 		for (int i = start; i < upTo; i++) {
-			if (dict.get(i).getW(0).toString().contains("also used to form"))
+			if (dict.get(i).getWord(0).toString().contains("also used to form"))
 				return true;
 		}
 		return false;
@@ -195,7 +195,7 @@ public class AblativeFinder {
 	private int canBeComp() {
 		for (int i = start; i < upTo; i++)
 			if (dict.get(i).canBe("ADJ") != -1)
-				for (String f: dict.get(i).getW("ADJ").getForms())
+				for (String f: dict.get(i).getWord("ADJ").getForms())
 					if (f.contains("COM") && (f.contains("NOM") || f.contains("ACC") && findNoun(f)))
 						return i;
 		return -1;
@@ -204,8 +204,8 @@ public class AblativeFinder {
 	private boolean findNoun(String form) {
 		for (int i = start; i < upTo; i++)
 			if (dict.get(i).canBe("N") != -1)
-				for (String f: dict.get(i).getW("N").getForms())
-					if (u.checkIfNounAdjUsable(f, form))
+				for (String f: dict.get(i).getWord("N").getForms())
+					if (u.nounAdjUsable(f, form))
 						return true;
 		return false;
 	}
@@ -213,7 +213,7 @@ public class AblativeFinder {
 	private ArrayList<DictEntry> findCaseFromEnd(String c) {
 		ArrayList<DictEntry> objects = new ArrayList<DictEntry>();
 		for (int i = upTo-1; i >= start; i--) {
-			if (dict.get(i).canBe("N") != -1 && dict.get(i).getW("N").canBe(c) != -1 && !dict.get(i).isClaimed()) {
+			if (dict.get(i).canBe("N") != -1 && dict.get(i).getWord("N").canBe(c) != -1 && !dict.get(i).isClaimed()) {
 				objects.add(dict.get(i));
 				objects.addAll(u.getAdjectivesFor(objects.get(0)));
 				return objects;

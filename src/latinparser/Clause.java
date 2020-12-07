@@ -91,7 +91,7 @@ public class Clause {
 		if (upTo-start == 1) {
 			NotesGenerator NGen = new NotesGenerator(dict, start, upTo);
 			String notes = NGen.getSingleNotes();
-			return dict.get(start).getW(0).translate(notes);
+			return dict.get(start).getWord(0).translate(notes);
 		}
 		
 		findVocatives();
@@ -183,7 +183,7 @@ public class Clause {
 				if (!findMatchForAdjective(i))
 					continue;
 				
-				String form = dict.get(i).getW(part).getF(0);
+				String form = dict.get(i).getWord(part).getForm(0);
 				form = form.substring(0, form.length()-4);
 				DictEntry attached = locateNoun(form);
 				
@@ -222,8 +222,8 @@ public class Clause {
 			for (String part : new String[] {"N", "PRON"}) {
 				if (dict.get(i).canBe(part) == -1)
 					continue;
-				for (String f: dict.get(i).getW(part).getForms())
-					if (u.checkIfNounAdjUsable(f, form))
+				for (String f: dict.get(i).getWord(part).getForms())
+					if (u.nounAdjUsable(f, form))
 						return dict.get(i);
 			}
 	}
@@ -243,7 +243,7 @@ public class Clause {
 		else
 			part = "NUM";
 		
-		for (String form: dict.get(idx).getW(part).getForms()) {
+		for (String form: dict.get(idx).getWord(part).getForms()) {
 			// removes type (positive, comparative, superlative, cardinal, etc)
 			if (part.equals("ADJ"))
 				form = form.substring(0, form.length()-4);
@@ -256,7 +256,7 @@ public class Clause {
 				
 		if (numWords == 1) {
 			dict.get(idx).setPart(part);
-			dict.get(idx).getW(part).setPart(matchingForms.get(0));
+			dict.get(idx).getWord(part).setForm(matchingForms.get(0));
 			setMatchingNoun(idx, matchingForms.get(0));
 			return true;
 		}
@@ -275,9 +275,9 @@ public class Clause {
 			for (String part : new String[] {"NOUN", "PRONOUN"}) {
 				if (dict.get(i).canBe(part) == -1)
 					continue;
-				for (String f2: dict.get(i).getW(part).getForms())
-					if (u.checkIfNounAdjUsable(form, f2)) {
-						dict.get(i).getW(part).setPart(f2);
+				for (String f2: dict.get(i).getWord(part).getForms())
+					if (u.nounAdjUsable(form, f2)) {
+						dict.get(i).getWord(part).setForm(f2);
 						return;
 					}
 			}
@@ -295,8 +295,8 @@ public class Clause {
 				continue;
 			if (i == originIdx)
 				continue;
-			for (String f2: dict.get(i).getW(part).getForms())
-				if (u.checkIfNounAdjUsable(form, f2))
+			for (String f2: dict.get(i).getWord(part).getForms())
+				if (u.nounAdjUsable(form, f2))
 					n++;
 		}
 		return n;
@@ -346,9 +346,9 @@ public class Clause {
 			if (d.isClaimed() || !canBePart)
 				continue;
 			
-			boolean mustBeForm = d.getW(part).canBe("!"+form) == -1;
+			boolean mustBeForm = d.getWord(part).canBe("!"+form) == -1;
 			
-			if (numNouns == 1 && d.getW(part).canBe(form) != -1) {
+			if (numNouns == 1 && d.getWord(part).canBe(form) != -1) {
 				addWordOfCase(subjObjs, d, form);
 				return;
 			} else if (d.canBe("!"+part) == -1 && mustBeForm) {
@@ -375,7 +375,7 @@ public class Clause {
 			if (!w.getPart().equals(part) && !w.getPart().equals("ADJ"))
 				return false;
 
-		for (String f: d.getW("ADJ").getForms()) {
+		for (String f: d.getWord("ADJ").getForms()) {
 			if (!f.contains(form))
 				return false;
 		}
@@ -388,8 +388,8 @@ public class Clause {
 		subjObjs.add(d);
 		subjObjs.addAll(u.getAdjectivesFor(d));
 		for (int x = idx; x < subjObjs.size(); x++) {
-			subjObjs.get(x).setPart(subjObjs.get(x).getW(0).getPart());
-			subjObjs.get(x).getW(0).setPart(form);
+			subjObjs.get(x).setPart(subjObjs.get(x).getWord(0).getPart());
+			subjObjs.get(x).getWord(0).setForm(form);
 			subjObjs.get(x).setClaimed();
 		}
 	}
@@ -426,19 +426,19 @@ public class Clause {
 		for (Word w: dict.get(start).getWords())
 			if (w.getPart().equals("N") || w.getPart().equals("ADJ") ||
 					w.getPart().equals("PRON"))
-				w.setPart("!VOC");
+				w.setForm("!VOC");
 		
 		for (int i = start+1; i < upTo; i++) {
-			boolean isVoc = dict.get(i-1).getW(0).toString().equals("O");
+			boolean isVoc = dict.get(i-1).getWord(0).toString().equals("O");
 			for (Word w: dict.get(i).getWords()) {
 				boolean isNoun = w.getPart().equals("N");
 				boolean isPron = w.getPart().equals("PRON");
 				boolean isAdj = w.getPart().equals("ADJ");
 				if (isNoun && isPron && isAdj) {
 					if (isVoc) {
-						w.setPart("VOC");
+						w.setForm("VOC");
 					} else
-						w.setPart("!VOC");
+						w.setForm("!VOC");
 				}
 			}
 		}
@@ -456,14 +456,14 @@ public class Clause {
 			
 			for (int j = 0; j < dict.get(i).getWords().size(); j++) {
 				
-				String cip = " "+ dict.get(i).getW(j).getPart() +" ";
+				String cip = " "+ dict.get(i).getWord(j).getPart() +" ";
 				boolean isCIP = Conj.contains(cip);
 				// remove words only if they have no valid forms and
 				// are not conjunction, interjection, or preposition
-				if (dict.get(i).getW(j).getForms() == null) {
+				if (dict.get(i).getWord(j).getForms() == null) {
 					continue;
 				}
-				if (dict.get(i).getW(j).getForms().size() == 0 && !isCIP) {
+				if (dict.get(i).getWord(j).getForms().size() == 0 && !isCIP) {
 					dict.get(i).removeForm(j);
 					j--;
 				}

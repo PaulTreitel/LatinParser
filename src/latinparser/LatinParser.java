@@ -268,11 +268,11 @@ public class LatinParser {
 		for (int i = 1;  i < dict.size(); i++) {
 			boolean isFPI = dict.get(i).toString().equals("iri");
 			boolean isVerb = dict.get(i-1).canBe("V") != -1; 
-			if (isVerb && isFPI && dict.get(i-1).getW("V").canBe("PPL") != -1) {
+			if (isVerb && isFPI && dict.get(i-1).getWord("V").canBe("PPL") != -1) {
 				
 				dict.get(i).setPart("ADJ");
 				dict.get(i).addPart("ADJ", "to be about to be",
-						dict.get(i-1).getW("V").getForms());
+						dict.get(i-1).getWord("V").getForms());
 			}
 		}
 	}
@@ -304,7 +304,7 @@ public class LatinParser {
 	public static boolean isKeyword(int idx) {
 		if (dict.get(idx).toString().equals("cum")) {
 			int isN = dict.get(idx+1).canBe("N");
-			if (isN == -1 || dict.get(idx+1).getW(isN).canBe("ABL") == -1)
+			if (isN == -1 || dict.get(idx+1).getWord(isN).canBe("ABL") == -1)
 				return true;
 			return false;
 		// spaces added to protect against compound keywords

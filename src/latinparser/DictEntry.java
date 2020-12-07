@@ -230,8 +230,8 @@ public class DictEntry {
 	/* getW
 	 * get a particular word by index or by part of speech
 	 */
-	public Word getW(int idx) {return possible.get(idx);}
-	public Word getW(String part) {
+	public Word getWord(int idx) {return possible.get(idx);}
+	public Word getWord(String part) {
 		return possible.get(canBe(part));
 	}
 	

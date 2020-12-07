@@ -42,19 +42,19 @@ public class Adverb extends Word {
 		return -1;
 	}
 	
-	/* setPart
+	/* setForm
 	 * takes a string and removes any possible word forms that do not match
 	 * supports negation where the first character of the string is '!'
 	 */
-	public void setPart(String part) {
-		boolean negated = part.charAt(0) == '!';
-		String absolutePart = part.substring(1); // part without '!'
+	public void setForm(String form) {
+		boolean negated = form.charAt(0) == '!';
+		String absoluteForm = form.substring(1); // part without '!'
 		
 		for (int i = possForms.size()-1; i >= 0; i--) {
 			String currForm = possForms.get(i);
-			if (!negated && !currForm.contains(part)) {
+			if (!negated && !currForm.contains(form)) {
 				possForms.remove(i);
-			} else if (negated && currForm.contains(absolutePart)) {
+			} else if (negated && currForm.contains(absoluteForm)) {
 				possForms.remove(i);
 			}
 		}
@@ -73,5 +73,5 @@ public class Adverb extends Word {
 	public void addMeaning(String m) {meaning += m;}
 	public String getPart() {return "ADV";}
 	public ArrayList<String> getForms() {return possForms;}
-	public String getF(int idx) {return possForms.get(idx);}
+	public String getForm(int idx) {return possForms.get(idx);}
 }

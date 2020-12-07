@@ -74,8 +74,8 @@ public class VerbFinder {
 				continue;
 			}
 			int vIdx = vIndices.get(i);
-			int formidx = dict.get(vIdx).getW(0).canBe(" VER");
-			String verbForm = dict.get(vIdx).getW(0).getF(formidx);
+			int formidx = dict.get(vIdx).getWord(0).canBe(" VER");
+			String verbForm = dict.get(vIdx).getWord(0).getForm(formidx);
 			String personNum = verbForm.substring(verbForm.length()-8,
 					verbForm.length()-4);
 			subjectForm.add(personNum);
@@ -94,7 +94,7 @@ public class VerbFinder {
 		for (int idx: vIndices) {
 			// find a nonstandard object case
 			for (String c: new String[] {"GEN", "DAT", "ABL"}) {
-				String verb = dict.get(idx).getW(0).toString(); 
+				String verb = dict.get(idx).getWord(0).toString(); 
 				if (verb.toUpperCase().contains(c)) {
 					objectForm.add(c);
 					break;
@@ -106,7 +106,7 @@ public class VerbFinder {
 		}
 		
 		for (int i = 0; i < objectForm.size(); i++) {
-			String word = dict.get(vIndices.get(i)).getW(0).toString(); 
+			String word = dict.get(vIndices.get(i)).getWord(0).toString(); 
 			if (word.substring(0, 3).equals("be;")) {
 				objectForm.set(i, "NOM");
 			}
@@ -124,9 +124,9 @@ public class VerbFinder {
 	 */
 	private void findVerb() {
 		for (int i = start; i < upTo; i++) {
-			if (dict.get(i).getW(0).getPart().equals("V")) {
+			if (dict.get(i).getWord(0).getPart().equals("V")) {
 				
-				for (String form: dict.get(i).getW(0).getForms()) {
+				for (String form: dict.get(i).getWord(0).getForms()) {
 					if (form.contains(" VER")) {
 						vIndices.add(i);
 						break;
@@ -150,9 +150,9 @@ public class VerbFinder {
 		int prevStart = getStartOfLastClause();
 		
 		for (int i = start-1; i >= prevStart; i--) {
-			if (dict.get(i).getW(0).getPart().equals("V")) {
+			if (dict.get(i).getWord(0).getPart().equals("V")) {
 				
-				for (String form: dict.get(i).getW(0).getForms()) {
+				for (String form: dict.get(i).getWord(0).getForms()) {
 					if (form.contains(" VER")) {
 						vIndices.add(i);
 						return;
@@ -173,7 +173,7 @@ public class VerbFinder {
 		int verbs = 0;
 		verbStealing:
 		for (int i = upTo; i < dict.size(); i++) {
-			Word w = dict.get(i).getW(0);
+			Word w = dict.get(i).getWord(0);
 			if (LatinParser.isKeyword(i)) {
 				keywords++;
 			} else if (w.getPart().equals("V") && keywords == verbs) {
@@ -223,7 +223,7 @@ public class VerbFinder {
 		while (ppl != -1 && sum != -1) {
 			// ensures that the sum form has a valid tense
 			for (String npart: new String[] {"PERF", "PLUP", "FUTP"}) {
-				if (dict.get(sum).getW("V").canBe(npart) != -1) {
+				if (dict.get(sum).getWord("V").canBe(npart) != -1) {
 					isTwoWordVerb = false;
 					return;
 				}
@@ -252,7 +252,7 @@ public class VerbFinder {
 				continue;
 			if (dict.get(i).canBe("V") == -1)
 				continue;
-			if (dict.get(i).getW("V").canBe("PPL") == -1)
+			if (dict.get(i).getWord("V").canBe("PPL") == -1)
 				continue;
 			return i;
 		}
@@ -273,7 +273,7 @@ public class VerbFinder {
 			if (dict.get(idx).canBe("V") == -1) {
 				continue;
 			}
-			Word d = dict.get(idx).getW("V");
+			Word d = dict.get(idx).getWord("V");
 			if (d.canBe("!VER") == -1 && d.toString().substring(0, 3).equals("be;")) {
 					return idx;
 			}

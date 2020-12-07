@@ -25,13 +25,14 @@ public abstract class Word {
 	
 	public void reduce() {reduction++;}
 	public String toString() {return meaning;}
+	public abstract String getPart();
+	
+	public abstract ArrayList<String> getForms();
+	public abstract String getForm(int idx);
+	public abstract void setForm(String form);
+	public abstract void addPossForm(String e);
 	
 	public abstract String translate(String notes);
-	public abstract void addPossForm(String e);
 	public abstract void addMeaning(String m);
-	public abstract String getPart();
-	public abstract ArrayList<String> getForms();
-	public abstract String getF(int idx);
 	public abstract int canBe(String f);
-	public abstract void setPart(String part);
 }

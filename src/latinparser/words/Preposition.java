@@ -16,12 +16,12 @@ public class Preposition extends Word {
 		return meaning.split(";|,|/")[Integer.parseInt(notes)].trim();
 	}
 	
-	public void setPart(String part) {}
+	public void setForm(String part) {}
 	public int canBe(String f) {return -1;}
 	public String getCase() {return caseTaken;}
 	public void addMeaning(String m) {meaning += m;}
 	public void addPossForm(String e) {}
 	public String getPart() {return "PREP";}
 	public ArrayList<String> getForms() {return new ArrayList<String>();}
-	public String getF(int idx) {return new String();}
+	public String getForm(int idx) {return new String();}
 }

@@ -70,15 +70,16 @@ public class PrepositionFinder {
 	 * @param phrases - the current list of prepositional phrases
 	 */
 	private void testPrepositionPhrase(int idx, ArrayList<DictEntry> phrases) {
-		String objCase = ((Preposition) (dict.get(idx).getW("PREP"))).getCase();
+		String objCase = ((Preposition) (dict.get(idx).getWord("PREP"))).getCase();
 		for (String part: new String[] {"N", "ADJ", "PRON"}) {
 			if (dict.get(idx+1).canBe(part) == -1) {
 				continue;
 			}
-			if (dict.get(idx+1).getW(part).canBe(objCase) == -1) {
+			if (dict.get(idx+1).getWord(part).canBe(objCase) == -1) {
 				continue;
 			}
 			dict.get(idx+1).setPart(part);
+			dict.get(idx+1).getWord(part).setForm(objCase);
 			phrases.add(dict.get(idx));
 			phrases.add(dict.get(idx + 1));
 			phrases.addAll(getPrepObjects(idx, objCase));
@@ -89,24 +90,30 @@ public class PrepositionFinder {
 	 * Attempts to find all the Words associated with the object of the prepositional phrase.
 	 * May not be very successful. It will also set the revisitPreps flag if it totally fails.
 	 * Sets the part of speech of all such Words so that they are part of the object phrase.
-	 * @param prepPos - the starting index of the prepositional phrase
+	 * @param idx - the starting index of the prepositional phrase
 	 * @param objCase - the case of the object phrase
 	 * @return the list of entries associated with the object of the prepositional phrase 
 	 */
-	private ArrayList<DictEntry> getPrepObjects(int prepPos, String objCase) {
+	private ArrayList<DictEntry> getPrepObjects(int idx, String objCase) {
 		int numNounsOfCase = u.getNumWordsOfForm("N", objCase) 
 				+ u.getNumWordsOfForm("PRON", objCase);
 		ArrayList<DictEntry> obj = new ArrayList<DictEntry>();
 		if (numNounsOfCase == 1) {
-			if (dict.get(prepPos+1).canBe("N") != -1)
-				obj.addAll(u.getAdjectivesFor(dict.get(prepPos+1)));
+			DictEntry sourceWord = dict.get(idx + 1);
+			if (sourceWord.canBe("N") != -1) {
+				obj.addAll(u.getAdjectivesFor(sourceWord));
+			}
 		} else if (numNounsOfCase > 1) {
 			revisitPreps = true;
 		}
 		for (DictEntry d: obj)
-			d.getW(0).setPart(objCase);
+			d.getWord(0).setForm(objCase);
 		return obj;
 	}
 	
+	/**
+	 * returns revisitPreps
+	 * @return revisitPreps
+	 */
 	public boolean getRevisit() {return revisitPreps;}
 }
