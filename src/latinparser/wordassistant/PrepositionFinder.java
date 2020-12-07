@@ -99,7 +99,7 @@ public class PrepositionFinder {
 		ArrayList<DictEntry> obj = new ArrayList<DictEntry>();
 		if (numNounsOfCase == 1) {
 			if (dict.get(prepPos+1).canBe("N") != -1)
-				obj.addAll(u.getAdjectivesFor(obj.get(0)));
+				obj.addAll(u.getAdjectivesFor(dict.get(prepPos+1)));
 		} else if (numNounsOfCase > 1) {
 			revisitPreps = true;
 		}
