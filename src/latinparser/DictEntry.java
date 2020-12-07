@@ -66,10 +66,13 @@ public class DictEntry {
 		
 		// culls any possible words that have no valid forms
 		for (int x = 0; x < possible.size(); x++) {
-			if (possible.get(x).getForms().size() == 0 &&
-				!"CONJ/INTERJPREP".contains(possible.get(x).getPart())) {
-				possible.remove(x);
-			}
+			if (possible.get(x).getForms() == null)
+				continue;
+			if (possible.get(x).getForms().size() > 0)
+				continue;
+			if ("CONJ/INTERJPREP".contains(possible.get(x).getPart()))
+				continue;
+			possible.remove(x);
 		}
 	}
 	
@@ -104,28 +107,28 @@ public class DictEntry {
 		int x = possible.size();
 		for (int i = 0; i < parts.length; i++) {
 			switch (parts[i]) {
-				case "N":
-					possible.add(new Noun(parts[4].charAt(0), mean, dictCodes));
-					break;
-				case "ADJ":
-					possible.add(new Adjective(mean, dictCodes));
-					break;
-				case "V":
-					possible.add(new Verb(mean, dictCodes));
-					break;
-				case "ADV":
-					possible.add(new Adverb(mean, dictCodes));
-					break;
-				case "PREP":
-					possible.add(new Preposition(mean, dictCodes, parts[i+1]));
-					break;
-				case "INTERJ":
-				case "CONJ":
-					possible.add(new ConjInterj(mean, dictCodes));
-					break;
-				case "NUM":
-					possible.add(new Numeral(mean, dictCodes));
-					break;
+			case "N":
+				possible.add(new Noun(parts[4].charAt(0), mean, dictCodes));
+				break;
+			case "ADJ":
+				possible.add(new Adjective(mean, dictCodes));
+				break;
+			case "V":
+				possible.add(new Verb(mean, dictCodes));
+				break;
+			case "ADV":
+				possible.add(new Adverb(mean, dictCodes));
+				break;
+			case "PREP":
+				possible.add(new Preposition(mean, dictCodes, parts[i+1]));
+				break;
+			case "INTERJ":
+			case "CONJ":
+				possible.add(new ConjInterj(mean, dictCodes));
+				break;
+			case "NUM":
+				possible.add(new Numeral(mean, dictCodes));
+				break;
 			}
 			
 			if (possible.size() > x) {
@@ -183,10 +186,9 @@ public class DictEntry {
 	}
 	
 	/* canBe
-	 * determines if the the DictEntry can be a certain part of speech,
-	 * returns -1 if not
-	 * allows for negation by "!" prefix - if the DictEntry can't be
-	 * that part of speech
+	 * determines if the the DictEntry can be a certain part of speech
+	 * returns the index of the Word that can, or -1 if no such Word exists
+	 * allows for negation by "!" prefix - if the DictEntry can't be that part of speech
 	 */
 	public int canBe(String part) {
 		for (int a = 0; a < possible.size(); a++)
@@ -202,15 +204,16 @@ public class DictEntry {
 	/* setPart
 	 * sets the DictEntry to a certain part of speech by removing every 
 	 * possibility that is not that part of speech
+	 * also allows negations when the first character is '!'
 	 */
 	public void setPart(String part) {
+		boolean negated = part.charAt(0) == '!';
+		String absolutePart = part.substring(1);
 		for (int i = possible.size()-1; i >= 0; i--) {
-			if (part.charAt(0) != '!' && 
-					!possible.get(i).getPart().equals(part)) {
+			String currPart = possible.get(i).getPart();
+			if (!negated &&  !currPart.equals(part)) {
 				possible.remove(i);
-		// allows for negation (ie setPartToNotBe)
-			} else if (possible.get(i).getPart().equals(part.substring(1)) &&
-					part.charAt(0) == '!' ) {
+			} else if (negated && currPart.equals(absolutePart)) {
 				possible.remove(i);
 			}
 		}

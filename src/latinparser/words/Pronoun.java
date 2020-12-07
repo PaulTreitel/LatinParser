@@ -5,13 +5,10 @@ import java.util.ArrayList;
 
 import latinparser.LatinParser;
 
-public class Pronoun implements Word {
+public class Pronoun extends Word {
 	private ArrayList<String> possForms = new ArrayList<String>();
-	private String meaning;
-	private String codes;
 	private String word;
 	private String part;
-	private int reduction = 0;
 	
 	public Pronoun(String origin, String c) {
 		word = origin;
@@ -23,11 +20,11 @@ public class Pronoun implements Word {
 	
 	/* addPossForm
 	 * loads pronoun contents from LatinParser file, then adds relevant ones
+	 * TODO how exactly does this work?
 	 */
 	public void addPossForm(String entry) {
 		String[] pronouns = LatinParser.getPronounsContents().split("\r\n\r\n");
 		if (!getForm(pronouns, word)) {
-			// TODO magic number
 			getForm(pronouns, word.substring(0, word.length()-3));
 		}
 	}
@@ -52,21 +49,6 @@ public class Pronoun implements Word {
 		return false;
 	}
 	
-	/* getFreq
-	 * returns the frequency of the word, reduced by `reduction`
-	 * frequency codes are specified by the WORDS program
-	 * codes are converted into integers, then `reduction` is subtracted off
-	 */
-	public int getFreq() {
-		char x = codes.charAt(4);
-		if (x == 'A') return 6 - reduction;
-		if (x == 'B') return 5 - reduction;
-		if (x == 'C') return 4 - reduction;
-		if (x == 'D') return 3 - reduction;
-		if (x == 'E') return 2 - reduction;
-		else return 1 - reduction;
-	}
-	
 	public String translate(String notes) {
 		String form = possForms.get(Integer.parseInt(notes.split(" ")[1]));
 		if (part.equals("N"))
@@ -81,13 +63,13 @@ public class Pronoun implements Word {
 	 */
 	public int canBe(String f) {
 		boolean negated = f.charAt(0) == '!';
-		String absolute_form = f.substring(1); // form without '!'
+		String absoluteForm = f.substring(1); // form without '!'
 		
 		for (int i = 0; i < possForms.size(); i++) {
-			String curr_form = possForms.get(i);
-			if (!negated && curr_form.contains(f)) {
+			String currForm = possForms.get(i);
+			if (!negated && currForm.contains(f)) {
 				return i;
-			} else if (negated && !curr_form.contains(absolute_form)) {
+			} else if (negated && !currForm.contains(absoluteForm)) {
 				return i;
 			}
 		}
@@ -100,21 +82,19 @@ public class Pronoun implements Word {
 	 */
 	public void setPart(String part) {
 		boolean negated = part.charAt(0) == '!';
-		String absolute_part = part.substring(1); // part without '!'
+		String absolutePart = part.substring(1); // part without '!'
 		
 		for (int i = possForms.size()-1; i >= 0; i--) {
-			String curr_form = possForms.get(i);
-			if (!negated && !curr_form.contains(part)) {
+			String currForm = possForms.get(i);
+			if (!negated && !currForm.contains(part)) {
 				possForms.remove(i);
-			} else if (negated && curr_form.contains(absolute_part)) {
+			} else if (negated && currForm.contains(absolutePart)) {
 				possForms.remove(i);
 			}
 		}
 	}
 	
 	public void addMeaning(String m) {}
-	public String toString() {return meaning;}
-	public void reduce() {reduction++;}
 	public String getPart() {return "PRON";}
 	public ArrayList<String> getForms() {return possForms;}
 	public String getF(int idx) {return possForms.get(idx);}

@@ -334,10 +334,8 @@ public class Clause {
 	private void canBeSubjObj(DictEntry d, ArrayList<DictEntry> subjObjs,
 			String form, boolean[] revisit) {
 		// TODO figure out what this does
-		System.out.println("FORM1: " + form);
 		if (form.substring(2, 3).equals(form.substring(3, 4)))
 			form = form.substring(0, 3);
-		System.out.println("FORM2: " + form);
 		
 		int numNouns = u.getNumWordsOfForm("N", form) + 
 				u.getNumWordsOfForm("PRON", form);
@@ -356,8 +354,6 @@ public class Clause {
 			} else if (d.canBe("!"+part) == -1 && mustBeForm) {
 				addWordOfCase(subjObjs, d, form);
 			} else if (mustBeForm) {
-				for (Word w: d.getWords())
-					System.out.println(w.getPart());
 				if (formsMatchADJN(d, part, form))
 					addWordOfCase(subjObjs, d, form);
 				else
@@ -464,6 +460,9 @@ public class Clause {
 				boolean isCIP = Conj.contains(cip);
 				// remove words only if they have no valid forms and
 				// are not conjunction, interjection, or preposition
+				if (dict.get(i).getW(j).getForms() == null) {
+					continue;
+				}
 				if (dict.get(i).getW(j).getForms().size() == 0 && !isCIP) {
 					dict.get(i).removeForm(j);
 					j--;

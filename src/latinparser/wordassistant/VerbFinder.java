@@ -23,12 +23,10 @@ import latinparser.words.Word;
 //TODO overhaul with .getW() that isn't 0?
 public class VerbFinder {
 	
-	private static final String SUM_FORM = 
-			"est                  V      5 1 IMPF"; //" ACTIVE  IND 3 S";
-	
 	private ArrayList<DictEntry> dict;
 	private int start;
 	private int upTo;
+	private boolean isTwoWordVerb = false;
 	private ArrayList<Integer> vIndices = new ArrayList<Integer>();
 	private ArrayList<String> subjectForm = new ArrayList<String>();
 	private ArrayList<String> objectForm = new ArrayList<String>();
@@ -39,25 +37,18 @@ public class VerbFinder {
 		upTo = tIdx;
 	}
 	
-	public ArrayList<Integer> getVerbIndices() {
-		return vIndices;
-	}
+	public ArrayList<Integer> getVerbIndices() {return vIndices;}
 	
-	public ArrayList<String> getSubjectForm() {
-		return subjectForm;
-	}
+	public ArrayList<String> getSubjectForm() {return subjectForm;}
 	
-	public ArrayList<String> getObjectForm() {
-		return objectForm;
-	}
+	public ArrayList<String> getObjectForm() {return objectForm;}
 	
 	//TODO test getVerbInfo()
 	//TODO infinitives (indirect statement)?
 	//TODO make verb-borrowing conditional on there being a subj/obj not part of a list
-	/* getVerbInfo
-	 * attempts to find verb; if successful, it claims those verb words
-	 * if unsuccessful, it attempts to copy a verb from another clause
-	 * returns ArrayList of all verb indices in the clause
+	/**
+	 * Attempts to find verb; if successful, it claims those verb words.
+	 * If unsuccessful, it attempts to copy a verb from another clause.
 	 */
 	public void getVerbInfo() {
 		findVerb();
@@ -73,30 +64,35 @@ public class VerbFinder {
 		setObjectForms();
 	}
 	
-	/* setSubjectForms
-	 * finds the required person and number of each very and constructs an
-	 * arraylist of those strings
+	/**
+	 * Finds the required person and number of each verb and constructs an
+	 * arraylist of those strings, subjectForm
 	 */
 	private void setSubjectForms() {
-		for (int idx: vIndices) {
-			int formidx = dict.get(idx).getW(0).canBe(" VER");
-			String verbForm = dict.get(idx).getW(0).getF(formidx);
+		for (int i = 0; i < vIndices.size(); i++) {
+			if (isTwoWordVerb && i % 2 == 1) {
+				continue;
+			}
+			int vIdx = vIndices.get(i);
+			int formidx = dict.get(vIdx).getW(0).canBe(" VER");
+			String verbForm = dict.get(vIdx).getW(0).getF(formidx);
 			String personNum = verbForm.substring(verbForm.length()-8,
 					verbForm.length()-4);
 			subjectForm.add(personNum);
 		}
 	}
 	
-	/* setObjectForms
-	 * attempts to find nonstandard object cases in the meaning line of the verb
-	 * otherwise defaults to accusative
-	 * for the verb 'to be' it uses nominative
-	 * assembles an arraylist of the required cases for the objects of the verb
-	 * NOTE assumes that all non-standard objects are listed in verb meaning
-	 * NOTE assumes all uses of cases in verb meaning indicate non-standard object cases
+	/**
+	 * Assembles an arraylist of the required cases for the objects of the verb.
+	 * Attempts to find nonstandard object cases in the meaning line of the verb,
+	 * otherwise it defaults to accusative.
+	 * Exception: For the verb 'to be' it uses nominative.
+	 * NOTE: assumes that all non-standard objects are listed in verb meaning.
+	 * NOTE: assumes all uses of cases in verb meaning indicate non-standard object cases.
 	 */
 	private void setObjectForms() {
 		for (int idx: vIndices) {
+			// find a nonstandard object case
 			for (String c: new String[] {"GEN", "DAT", "ABL"}) {
 				String verb = dict.get(idx).getW(0).toString(); 
 				if (verb.toUpperCase().contains(c)) {
@@ -122,10 +118,9 @@ public class VerbFinder {
 		return ' ';
 	}
 	
-	/* findVerb
-	 * looks for all words in the clause whose most likely possibility is a verb
-	 * and can be a conjugated verb
-	 * adds their indices to vIndices
+	/**
+	 * Looks for all words in the clause whose most likely possibility is a verb
+	 * and can be a conjugated verb. Adds their indices to vIndices.
 	 */
 	private void findVerb() {
 		for (int i = start; i < upTo; i++) {
@@ -141,17 +136,20 @@ public class VerbFinder {
 		}
 	}
 	
-	/* stealVerb
-	 * finds verb from a previous clause and adds it to vIndices
+	/**
+	 * Finds the verb from a previous or later clause and adds it to vIndices.
+	 * If this is the first clause, it steals the verb from the next clause.
+	 * If this is a later clause, it will first attempt to steal a verb from the previous clause,
+	 * then the next clause.
 	 */
 	private void stealVerb() {
 		if (start == 0) {
 			stealLaterVerb();
 			return;
 		}
-		int e = getStartOfLastClause();
+		int prevStart = getStartOfLastClause();
 		
-		for (int i = start-1; i > e; i--) {
+		for (int i = start-1; i >= prevStart; i--) {
 			if (dict.get(i).getW(0).getPart().equals("V")) {
 				
 				for (String form: dict.get(i).getW(0).getForms()) {
@@ -162,11 +160,13 @@ public class VerbFinder {
 				}
 			}
 		}
-		System.out.println("HELP stealVerb()");
+		// TODO more sophisticated system for stealing verbs from other clauses
+		stealLaterVerb();
 	}
 	
-	/* stealLaterVerb
-	 * sub-process of stealVerb, but for when there is no preceding clause
+	/**
+	 * Steals a verb from the following clause to be used in this one.
+	 * If a verb is found, its index is added to vIndices.
 	 */
 	private void stealLaterVerb() {
 		int keywords = 0;
@@ -189,9 +189,10 @@ public class VerbFinder {
 		}
 	}
 	
-	/* getStartofLastClause
-	 * returns the index of the start of the previous clause in the sentence
-	 * or the start of the first clause if there are no previous ones
+	/**
+	 * Finds the starting index of the previous clause, or 0 if this is the first clause.
+	 * @return The index of the start of the previous clause in the sentence
+	 * or the start of the first clause if there are no previous ones.
 	 */
 	private int getStartOfLastClause() {
 		for (int i = start-1; i > 0; i--) {
@@ -211,19 +212,23 @@ public class VerbFinder {
 	 */
 	
 	
-	
+	/**
+	 * Detects if there is a two-word verb (such as "amatus est") in the clause.
+	 * If so, adds the participle index to vIndices and claims the participle.
+	 * Also sets the isTwoWordVerb flag.
+	 */
 	public void findTwoWordVerbs() {
 		int ppl = checkForParticiple();
 		int sum = checkForSumPart();
 		while (ppl != -1 && sum != -1) {
 			// ensures that the sum form has a valid tense
-			for (String npart: new String[] {"PERF", "PLUP", "FUTP"})
-				if (dict.get(sum).getW("V").canBe(npart) != -1)
+			for (String npart: new String[] {"PERF", "PLUP", "FUTP"}) {
+				if (dict.get(sum).getW("V").canBe(npart) != -1) {
+					isTwoWordVerb = false;
 					return;
-			//twoWordV = true;
-			// TODO figure out what this does
-			dict.get(sum).getW("V").addPossForm(SUM_FORM+genFormType(dict.get(sum)));
-			dict.get(sum).getW("V").setPart("IMPF");
+				}
+			}
+			isTwoWordVerb = true;
 			
 			// adds participle index to verbs right after index of sum form
 			vIndices.add(vIndices.indexOf(sum)+1, ppl);
@@ -235,26 +240,11 @@ public class VerbFinder {
 			sum = checkForSumPart();
 		}
 	}
-
-	/* genFormType
-	 * takes a DictEntry, gets the first verb sense of the word, then gets
-	 * the first possible form of that word
-	 * removes the tense and fully writes out the voice, then returns
-	 * the resulting string
-	 */
-	private String genFormType(DictEntry d) {
-		String f;
-		String existing = d.getW("V").getF(0);
-		if (existing.contains(" A "))
-			f = "ACTIVE" + existing.substring(existing.length()-12);
-		else
-			f = "PASSIVE" + existing.substring(existing.length()-12);
-		return f;
-	}
 	
-	/* checkForParticiple
-	 * returns the index of the first unclaimed Word that can be a participle
-	 * returns -1 if there are none
+	/**
+	 * Returns the index of the first unclaimed Word that can be a participle,
+	 * returns -1 if there are none.
+	 * @return index of first Word that could be a participle, -1 if it doesn't exist
 	 */
 	private int checkForParticiple() {
 		for (int i = start; i < upTo; i++) {
@@ -269,21 +259,24 @@ public class VerbFinder {
 		return -1;
 	}
 	
-	/* checkForSumPart
-	 * checks for a form of the word sum (also succeeds on 'iri')
-	 * returns its index in the list, or -1 if it doesn't exist
+	/**
+	 * Checks for a form of the word sum (also succeeds on 'iri').
+	 * Returns its index in the list, or -1 if it doesn't exist.
+	 * @return index of form of sum or 'iri', or -1 if it doesn't exist
 	 */
 	private int checkForSumPart() {
 		for (int idx: vIndices) {
-			if (dict.get(idx).canBe("V") != -1) {
-				
-				Word d = dict.get(idx).getW("V");
-				if (d.canBe("!VER") == -1)
-					if (d.toString().substring(0, 3).equals("be;"))
-						return idx;
-			}
-			if (dict.get(idx).toString().equals("iri"))
+			if (dict.get(idx).toString().equals("iri")) {
 				return idx;
+			}
+			
+			if (dict.get(idx).canBe("V") == -1) {
+				continue;
+			}
+			Word d = dict.get(idx).getW("V");
+			if (d.canBe("!VER") == -1 && d.toString().substring(0, 3).equals("be;")) {
+					return idx;
+			}
 		}
 		return -1;
 	}

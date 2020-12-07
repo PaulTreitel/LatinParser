@@ -2,14 +2,16 @@ package latinparser.words;
 
 import java.util.ArrayList;
 
-public class Verb implements Word {
+public class Verb extends Word {
 	private ArrayList<String> possForms = new ArrayList<String>();
-	private String meaning;
-	private String codes;
 	private String form;
 	private String chosenMeaning;
-	private int reduction = 0;
 	private char gender;
+	private static final int VERB_TYPE_START = 21;
+	private static final int VERB_FORM_START = 32;
+	private static final int CONJUGATED_FORM_END = 38;
+	private static final int PARTICIPLE_FORM_END = 46;
+	private static final int SUPINE_FORM_END = 39;
 	
 	public Verb(String m, String co) {
 		meaning = m;
@@ -23,34 +25,28 @@ public class Verb implements Word {
 	public void addPossForm(String form) {
 		// TODO magic number galore
 		if (form.length() < 30  || form.contains("Early")) {
-			//possForms.add(form);
 			return;
 		}
 		String addition = "";
-		if (form.substring(21, 23).equals("V "))
-			addition = form.substring(32, 38) + form.substring(44, 52) +" VER"; //"PRES P IND 2 S"
-		else if (form.substring(21, 25).equals("VPAR"))
-			addition = form.substring(32, 46) + form.substring(52, form.length()-1); //"NOM S M PERF P PPL"
-		else if (form.substring(21, 27).equals("SUPINE"))
-			addition = form.substring(32, 39) +" SUP"; //"ACC S N"
-		else
+		switch (form.substring(VERB_TYPE_START, VERB_TYPE_START + 6)) {
+		case "V     ":
+			// of the form "PRES P IND 2 S"
+			addition = form.substring(VERB_FORM_START, CONJUGATED_FORM_END) 
+			+ form.substring(44, 52) +" VER";
+			break;
+		case "VPAR  ":
+			// of the form "NOM S M PERF P PPL"
+			addition = form.substring(VERB_FORM_START, PARTICIPLE_FORM_END) 
+			+ form.substring(52);
+			break;
+		case "SUPINE":
+			// of the form "ACC S N"
+			addition = form.substring(VERB_FORM_START, SUPINE_FORM_END) +" SUP";
+			break;
+		default:
 			return;
+		}
 		possForms.add(addition.replaceAll("   ", " A "));
-	}
-	
-	/* getFreq
-	 * returns the frequency of the word, reduced by `reduction`
-	 * frequency codes are specified by the WORDS program
-	 * codes are converted into integers, then `reduction` is subtracted off
-	 */
-	public int getFreq() {
-		char x = codes.charAt(4);
-		if (x == 'A') return 6 - reduction;
-		if (x == 'B') return 5 - reduction;
-		if (x == 'C') return 4 - reduction;
-		if (x == 'D') return 3 - reduction;
-		if (x == 'E') return 2 - reduction;
-		else return 1 - reduction;
 	}
 	
 	public String translate(String notes) {
@@ -343,13 +339,13 @@ public class Verb implements Word {
 	 */
 	public int canBe(String f) {
 		boolean negated = f.charAt(0) == '!';
-		String absolute_form = f.substring(1); // form without '!'
+		String absoluteForm = f.substring(1); // form without '!'
 		
 		for (int i = 0; i < possForms.size(); i++) {
-			String curr_form = possForms.get(i);
-			if (!negated && curr_form.contains(f)) {
+			String currForm = possForms.get(i);
+			if (!negated && currForm.contains(f)) {
 				return i;
-			} else if (negated && !curr_form.contains(absolute_form)) {
+			} else if (negated && !currForm.contains(absoluteForm)) {
 				return i;
 			}
 		}
@@ -362,13 +358,13 @@ public class Verb implements Word {
 	 */
 	public void setPart(String part) {
 		boolean negated = part.charAt(0) == '!';
-		String absolute_part = part.substring(1); // part without '!'
+		String absolutePart = part.substring(1); // part without '!'
 		
 		for (int i = possForms.size()-1; i >= 0; i--) {
-			String curr_form = possForms.get(i);
-			if (!negated && !curr_form.contains(part)) {
+			String currForm = possForms.get(i);
+			if (!negated && !currForm.contains(part)) {
 				possForms.remove(i);
-			} else if (negated && curr_form.contains(absolute_part)) {
+			} else if (negated && currForm.contains(absolutePart)) {
 				possForms.remove(i);
 			}
 		}

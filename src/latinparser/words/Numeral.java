@@ -2,11 +2,10 @@ package latinparser.words;
 
 import java.util.ArrayList;
 
-public class Numeral implements Word {
+public class Numeral extends Word {
 	private ArrayList<String> possForms = new ArrayList<String>();
-	private String meaning;
-	private String codes;
-	private int reduction = 0;
+	private static final int NUM_FORM_START = 32;
+	private static final int NUM_FORM_END = 43;
 	
 	public Numeral(String m, String c) {
 		meaning = m.replace("as a ROMAN NUMERAL", "").replace("1th", "1st");
@@ -14,30 +13,15 @@ public class Numeral implements Word {
 		codes = c;
 	}
 	
+	/* addRemainingForms
+	 * adds all word forms to the list of possible forms
+	 */
 	public void addRemainingForms() {
-		if (possForms.size() > 1 || (possForms.size() == 1 && !possForms.get(0).contains(" X ")))
-			return;
 		if (possForms.size() == 1)
 			possForms.remove(0);
 		for (String c: new String[] {"NOM", "GEN", "DAT", "ACC", "ABL", "VOC"})
-			for (String n: new String[] {" S", " P"})
-				for (String g: new String[] {" M", " F", " N"})
-					possForms.add(c+n+g);
-	}
-	
-	/* getFreq
-	 * returns the frequency of the word, reduced by `reduction`
-	 * frequency codes are specified by the WORDS program
-	 * codes are converted into integers, then `reduction` is subtracted off
-	 */
-	public int getFreq() {
-		char x = codes.charAt(4);
-		if (x == 'A') return 6 - reduction;
-		if (x == 'B') return 5 - reduction;
-		if (x == 'C') return 4 - reduction;
-		if (x == 'D') return 3 - reduction;
-		if (x == 'E') return 2 - reduction;
-		else return 1 - reduction;
+			for (String n: new String[] {"S", "P"})
+					possForms.add(c +" "+ n +" X");
 	}
 	
 	public String translate(String notes) {
@@ -52,10 +36,13 @@ public class Numeral implements Word {
 		if (e.contains("Early"))
 			return;
 		if (e.equals("1")) {
-			addRemainingForms();
+			boolean hasUniqueForm = possForms.size() == 1 && !possForms.get(0).contains(" X ");
+			if (possForms.size() == 0 || !hasUniqueForm) {
+				addRemainingForms();
+			}
 			return;
 		}
-		possForms.add(e.substring(32, 43));
+		possForms.add(e.substring(NUM_FORM_START, NUM_FORM_END));
 	}
 	
 	/* canBe
@@ -65,13 +52,13 @@ public class Numeral implements Word {
 	 */
 	public int canBe(String f) {
 		boolean negated = f.charAt(0) == '!';
-		String absolute_form = f.substring(1); // form without '!'
+		String absoluteForm = f.substring(1); // form without '!'
 		
 		for (int i = 0; i < possForms.size(); i++) {
-			String curr_form = possForms.get(i);
-			if (!negated && curr_form.contains(f)) {
+			String currForm = possForms.get(i);
+			if (!negated && currForm.contains(f)) {
 				return i;
-			} else if (negated && !curr_form.contains(absolute_form)) {
+			} else if (negated && !currForm.contains(absoluteForm)) {
 				return i;
 			}
 		}
@@ -84,21 +71,19 @@ public class Numeral implements Word {
 	 */
 	public void setPart(String part) {
 		boolean negated = part.charAt(0) == '!';
-		String absolute_part = part.substring(1); // part without '!'
+		String absolutePart = part.substring(1); // part without '!'
 		
 		for (int i = possForms.size()-1; i >= 0; i--) {
-			String curr_form = possForms.get(i);
-			if (!negated && !curr_form.contains(part)) {
+			String currForm = possForms.get(i);
+			if (!negated && !currForm.contains(part)) {
 				possForms.remove(i);
-			} else if (negated && curr_form.contains(absolute_part)) {
+			} else if (negated && currForm.contains(absolutePart)) {
 				possForms.remove(i);
 			}
 		}
 	}
 	
 	public void addMeaning(String m) {meaning += m;}
-	public String toString() {return meaning;}
-	public void reduce() {reduction++;}
 	public String getPart() {return "NUM";}
 	public ArrayList<String> getForms() {return possForms;}
 	public String getF(int idx) {return possForms.get(idx);}

@@ -2,32 +2,16 @@ package latinparser.words;
 
 import java.util.ArrayList;
 
-public class Adverb implements Word {
+public class Adverb extends Word {
 	private ArrayList<String> possForms = new ArrayList<String>();
-	private String meaning;
-	private String codes;
-	private int reduction = 0;
+	private static final int ADV_COMPARISON_START = 28;
+	private static final int ADV_COMPARISON_END = 31;
 	
 	public Adverb(String m, String c) {
 		meaning = m;
 		codes = c;
 	}
-	
-	/* getFreq
-	 * returns the frequency of the word, reduced by `reduction`
-	 * frequency codes are specified by the WORDS program
-	 * codes are converted into integers, then `reduction` is subtracted off
-	 */
-	public int getFreq() {
-		char x = codes.charAt(4);
-		if (x == 'A') return 6 - reduction;
-		if (x == 'B') return 5 - reduction;
-		if (x == 'C') return 4 - reduction;
-		if (x == 'D') return 3 - reduction;
-		if (x == 'E') return 2 - reduction;
-		else return 1 - reduction;
-	}
-	
+		
 	public String translate(String notes) {
 		String form = possForms.get(Integer.parseInt(notes.split(" ")[1]));
 		String mean = meaning.split(";|,|/")[Integer.parseInt(notes.split(" ")[0])].trim();
@@ -45,13 +29,13 @@ public class Adverb implements Word {
 	 */
 	public int canBe(String f) {
 		boolean negated = f.charAt(0) == '!';
-		String absolute_form = f.substring(1); // form without '!'
+		String absoluteForm = f.substring(1); // form without '!'
 		
 		for (int i = 0; i < possForms.size(); i++) {
-			String curr_form = possForms.get(i);
-			if (!negated && curr_form.contains(f)) {
+			String currForm = possForms.get(i);
+			if (!negated && currForm.contains(f)) {
 				return i;
-			} else if (negated && !curr_form.contains(absolute_form)) {
+			} else if (negated && !currForm.contains(absoluteForm)) {
 				return i;
 			}
 		}
@@ -64,13 +48,13 @@ public class Adverb implements Word {
 	 */
 	public void setPart(String part) {
 		boolean negated = part.charAt(0) == '!';
-		String absolute_part = part.substring(1); // part without '!'
+		String absolutePart = part.substring(1); // part without '!'
 		
 		for (int i = possForms.size()-1; i >= 0; i--) {
-			String curr_form = possForms.get(i);
-			if (!negated && !curr_form.contains(part)) {
+			String currForm = possForms.get(i);
+			if (!negated && !currForm.contains(part)) {
 				possForms.remove(i);
-			} else if (negated && curr_form.contains(absolute_part)) {
+			} else if (negated && currForm.contains(absolutePart)) {
 				possForms.remove(i);
 			}
 		}
@@ -82,14 +66,11 @@ public class Adverb implements Word {
 	 */
 	public void addPossForm(String e) {
 		if (!e.contains("Early")) {
-			// TODO more magic constants
-			possForms.add(e.substring(28, 31));
+			possForms.add(e.substring(ADV_COMPARISON_START, ADV_COMPARISON_END));
 		}
 	}
 	
 	public void addMeaning(String m) {meaning += m;}
-	public String toString() {return meaning;}
-	public void reduce() {reduction++;}
 	public String getPart() {return "ADV";}
 	public ArrayList<String> getForms() {return possForms;}
 	public String getF(int idx) {return possForms.get(idx);}

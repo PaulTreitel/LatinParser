@@ -30,30 +30,30 @@ public class PrepositionFinder {
 	}
 	
 	//TODO test findPrepositionPhrases()
+	/**
+	 * Finds prepositional phrases and adds them to a list of all prepositional
+	 * phrases and associated Words.
+	 * @return list of all Words in prepositional phrases
+	 */
 	public ArrayList<DictEntry> findPrepositionPhrases() { 
 		ArrayList<DictEntry> phrases = new ArrayList<DictEntry>();
-		int n = 0, h = 0;
-		for (int i = start; i < upTo; i++) {
-			if (dict.get(i).canBe("PREP") != -1) {
-				int s = phrases.size();
-				for (String part: new String[] {"N", "ADJ", "PRON"}) {
-					String objPart = ((Preposition) (dict.get(i).getW("PREP"))).getCase();
-					if (dict.get(i+1).canBe(part) != -1 && 
-							dict.get(i+1).getW(part).canBe(objPart) != -1) {
-						phrases.add(dict.get(i));
-						dict.get(i+1).setPart(part);
-						phrases.addAll(getPrepObjects(i, objPart));
-					}
-				}
-				if (s == phrases.size() && n < dict.get(i).getWords().size()) {
-					dict.get(i).swapForm();
-					n++;
-					i--;
-				} else if (s == phrases.size() && h < dict.get(i+1).getWords().size()) {
-					dict.get(i+1).swapForm();
-					n = 0;
-					h++;
-					i--;
+		int numPartsTested = 0;
+		for (int idx = start; idx < upTo; idx++) {
+			if (dict.get(idx).canBe("PREP") == -1) {
+				continue;
+			}
+			int s = phrases.size();
+			testPrepositionPhrase(idx, phrases);
+			if (s == phrases.size()) {
+				// should test all possible parts of speech for subsequent word
+				if (numPartsTested < dict.get(idx+1).getWords().size()) {
+					dict.get(idx+1).swapForm();
+					numPartsTested++;
+					idx--;
+				// this Word can't be prep phrase but it could be under a different Word
+				} else {
+					dict.get(idx).removeForm(0);
+					idx--;
 				}
 			}
 		}
@@ -62,22 +62,49 @@ public class PrepositionFinder {
 		}
 		return phrases;
 	}
+	
+	/**
+	 * Determines if a given index is actually a prepositional phrase.
+	 * If so, it adds it to the list of phrases and attempts to find all related words.
+	 * @param idx - the starting index of the prepositional phrase
+	 * @param phrases - the current list of prepositional phrases
+	 */
+	private void testPrepositionPhrase(int idx, ArrayList<DictEntry> phrases) {
+		String objCase = ((Preposition) (dict.get(idx).getW("PREP"))).getCase();
+		for (String part: new String[] {"N", "ADJ", "PRON"}) {
+			if (dict.get(idx+1).canBe(part) == -1) {
+				continue;
+			}
+			if (dict.get(idx+1).getW(part).canBe(objCase) == -1) {
+				continue;
+			}
+			dict.get(idx+1).setPart(part);
+			phrases.add(dict.get(idx));
+			phrases.add(dict.get(idx + 1));
+			phrases.addAll(getPrepObjects(idx, objCase));
+		}
+	}
 
-	private ArrayList<DictEntry> getPrepObjects(int prepPos, String objPart) {
-		int numNounsOfCase = u.getNumWordsOfForm("N", objPart) + u.getNumWordsOfForm("PRON", objPart);
+	/**
+	 * Attempts to find all the Words associated with the object of the prepositional phrase.
+	 * May not be very successful. It will also set the revisitPreps flag if it totally fails.
+	 * Sets the part of speech of all such Words so that they are part of the object phrase.
+	 * @param prepPos - the starting index of the prepositional phrase
+	 * @param objCase - the case of the object phrase
+	 * @return the list of entries associated with the object of the prepositional phrase 
+	 */
+	private ArrayList<DictEntry> getPrepObjects(int prepPos, String objCase) {
+		int numNounsOfCase = u.getNumWordsOfForm("N", objCase) 
+				+ u.getNumWordsOfForm("PRON", objCase);
 		ArrayList<DictEntry> obj = new ArrayList<DictEntry>();
-		if (dict.get(prepPos+1).getW(0).canBe(objPart) == -1) {
-			return obj;
-		} if (numNounsOfCase == 1) {
-			obj.add(dict.get(prepPos+1));
-			if (dict.get(prepPos+1).canBe("ADJ") == -1 && dict.get(prepPos+1).canBe("NUM") == -1)
+		if (numNounsOfCase == 1) {
+			if (dict.get(prepPos+1).canBe("N") != -1)
 				obj.addAll(u.getAdjectivesFor(obj.get(0)));
-			for (DictEntry d: obj)
-				d.getW(0).setPart(objPart);
 		} else if (numNounsOfCase > 1) {
-			obj.add(dict.get(prepPos+1));
 			revisitPreps = true;
 		}
+		for (DictEntry d: obj)
+			d.getW(0).setPart(objCase);
 		return obj;
 	}
 	

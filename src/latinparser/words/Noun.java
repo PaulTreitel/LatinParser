@@ -5,12 +5,12 @@ import java.util.ArrayList;
 
 import latinparser.LatinParser;
 
-public class Noun implements Word {
+public class Noun extends Word {
 	private ArrayList<String> possForms = new ArrayList<String>();
-	private String meaning;
-	private String codes;
-	private int reduction = 0;
 	private char gender;
+	private static final int N_FORM_START = 32;
+	private static final int N_FORM_END = 39;
+	private static final int N_FORM_LENGTH = N_FORM_END - N_FORM_START;
 	
 	public Noun(char g, String m, String c) {
 		meaning = m;
@@ -18,7 +18,7 @@ public class Noun implements Word {
 		gender = g;
 		if (gender == 'P')
 			// P is special gender indicating IGNORE_UNKNOWN_NAME came up
-			addUnknownForms();
+			addAllForms();
 	}
 	
 	/* addPossForm
@@ -31,35 +31,30 @@ public class Noun implements Word {
 		}
 		if (e.contains("LOC")) {
 			addLOCForm(e);
-		} else if (e.length() > 38) {
-			// TODO more magic numbers
-			possForms.add(e.substring(32, 39));
+		} else if (e.length() >= N_FORM_END) {
+			possForms.add(e.substring(N_FORM_START, N_FORM_END));
+		} else if (e.length() == N_FORM_LENGTH) {
+			possForms.add(e);
 		}
 	}
 	
-	/* getFreq
-	 * returns the frequency of the word, reduced by `reduction`
-	 * frequency codes are specified by the WORDS program
-	 * codes are converted into integers, then `reduction` is subtracted off
-	 */
-	public int getFreq() {
-		char x = codes.charAt(4);
-		if (x == 'A') return 6 - reduction;
-		if (x == 'B') return 5 - reduction;
-		if (x == 'C') return 4 - reduction;
-		if (x == 'D') return 3 - reduction;
-		if (x == 'E') return 2 - reduction;
-		else return 1 - reduction;
+	public String translate(String notes) {
+		if (gender == 'P')
+			return meaning;
+		return Noun.translate(meaning, possForms.get(Integer.parseInt(notes.split(" ")[1])), notes);
 	}
 	
-	// TODO should this stuff be static?
+	// static so that Pronoun can use it
 	public static String translate(String m, String form, String notes) {
 		notes = notes.replaceAll(" SUBST", "");
 		String mean = m.split(";|,|/")[Integer.parseInt(notes.split(" ")[0])].trim();
+		
+		String prep = getPrep(form, notes);
+		String article = getArticle(mean, notes);
 		if (form.contains(" S"))
-			return (getPrep(form, notes) + getArticle(mean, notes) + mean).trim();
+			return (prep + article + mean).trim();
 		else
-			return (getPrep(form, notes) + getArticle(mean, notes) + pluralize(mean)).trim();
+			return (prep + article + pluralize(mean)).trim();
 	}
 	
 	public static String getArticle(String mean, String notes) {
@@ -103,12 +98,6 @@ public class Noun implements Word {
 		return mean +"s";
 	}
 	
-	public String translate(String notes) {
-		if (gender == 'P')
-			return meaning;
-		return Noun.translate(meaning, possForms.get(Integer.parseInt(notes.split(" ")[1])), notes);
-	}
-	
 	private void addLOCForm(String entry) {
 		if (LatinParser.getLocsContents().contains(meaning))
 			possForms.add(entry.substring(32, 37));
@@ -121,13 +110,13 @@ public class Noun implements Word {
 	 */
 	public int canBe(String f) {
 		boolean negated = f.charAt(0) == '!';
-		String absolute_form = f.substring(1); // form without '!'
+		String absoluteForm = f.substring(1); // form without '!'
 		
 		for (int i = 0; i < possForms.size(); i++) {
-			String curr_form = possForms.get(i);
-			if (!negated && curr_form.contains(f)) {
+			String currForm = possForms.get(i);
+			if (!negated && currForm.contains(f)) {
 				return i;
-			} else if (negated && !curr_form.contains(absolute_form)) {
+			} else if (negated && !currForm.contains(absoluteForm)) {
 				return i;
 			}
 		}
@@ -140,79 +129,30 @@ public class Noun implements Word {
 	 */
 	public void setPart(String part) {
 		boolean negated = part.charAt(0) == '!';
-		String absolute_part = part.substring(1); // part without '!'
+		String absolutePart = part.substring(1); // part without '!'
 		
 		for (int i = possForms.size()-1; i >= 0; i--) {
-			String curr_form = possForms.get(i);
-			if (!negated && !curr_form.contains(part)) {
+			String currForm = possForms.get(i);
+			if (!negated && !currForm.contains(part)) {
 				possForms.remove(i);
-			} else if (negated && curr_form.contains(absolute_part)) {
+			} else if (negated && currForm.contains(absolutePart)) {
 				possForms.remove(i);
 			}
 		}
 	}
 	
-	// TODO clean up this mess
-	private void addUnknownForms() {
-		String one = meaning.substring(meaning.length()-1);
-		String two = meaning.substring(meaning.length()-2);
-		String four = meaning.substring(meaning.length()-4);
-		if (four.equals("ibus"))
-			addForms(new String[] {"DAT", "ABL"}, new String[] {"P"}, new String[] {"X"});
-		else if (four.equals("orum"))
-			addForms(new String[] {"GEN"}, new String[] {"P"},new String[] {"M", "N"});
-		else if (four.equals("arum"))
-			addForms(new String[] {"GEN"}, new String[] {"P"},new String[] {"F"});
-		else if (two.equals("is")) {
-			addForms(new String[] {"GEN"}, new String[] {"S"},new String[] {"X"});
-			addForms(new String[] {"DAT", "ABL"}, new String[] {"P"},new String[] {"X"});
-		} else if (two.equals("ae")) {
-			addForms(new String[] {"NOM", "VOC"}, new String[] {"P"},new String[] {"F"});
-			addForms(new String[] {"GEN", "DAT"}, new String[] {"S"},new String[] {"F"});
-		} else if (two.equals("am"))
-			addForms(new String[] {"ACC"}, new String[] {"S"},new String[] {"F"});
-		else if (two.equals("as"))
-			addForms(new String[] {"ACC"}, new String[] {"P"},new String[] {"F"});
-		else if (two.equals("os"))
-			addForms(new String[] {"ACC"}, new String[] {"P"},new String[] {"M"});
-		else if (two.equals("us") || one.equals("r"))
-			addForms(new String[] {"NOM"}, new String[] {"S"},new String[] {"M"});
-		else if (one.equals("o"))
-			addForms(new String[] {"DAT", "ABL"}, new String[] {"S"},new String[] {"M", "N"});
-		else if (two.equals("um")) {
-			addForms(new String[] {"ACC"}, new String[] {"S"},new String[] {"M", "N"});
-			addForms(new String[] {"NOM", "VOC"}, new String[] {"S"},new String[] {"N"});
-			addForms(new String[] {"GEN"}, new String[] {"P"},new String[] {"X"});
-		} else if (one.equals("a")) {
-			addForms(new String[] {"NOM", "ABL", "VOC"}, new String[] {"S"},new String[] {"F"});
-			addForms(new String[] {"NOM", "ACC", "VOC"}, new String[] {"P"},new String[] {"N"});
-		} else if (one.equals("i")) {
-			addForms(new String[] {"NOM", "VOC"}, new String[] {"P"},new String[] {"M"});
-			addForms(new String[] {"GEN"}, new String[] {"S"},new String[] {"M", "N"});
-			addForms(new String[] {"DAT"}, new String[] {"S"},new String[] {"X"});
-		} else if (two.equals("es"))
-			addForms(new String[] {"NOM", "ACC", "VOC"}, new String[] {"P"},new String[] {"X"});
-		else if (two.equals("em"))
-			addForms(new String[] {"ACC"}, new String[] {"S"},new String[] {"X"});
-		else if (one.equals("e"))
-			addForms(new String[] {"ABL"}, new String[] {"S"},new String[] {"X"});
-		else {
-			addForms(new String[] {"NOM", "ACC", "VOC"}, new String[] {"S"},new String[] {"N"});
-			addForms(new String[] {"NOM", "VOC"}, new String[] {"S"},new String[] {"C"});
-		}
+	/* addAllForms
+	 * adds all noun forms to the list of possible forms
+	 */
+	private void addAllForms() {
+		for (String c: new String[] {"NOM", "GEN", "DAT", "ACC", "ABL", "VOC"})
+			for (String n: new String[] {"S", "P"})
+					possForms.add(c +" "+ n +" X");
 	}
 	
-	private void addForms(String[] cases, String[] numbers, String[] genders) {
-		for (String c: cases)
-			for (String n: numbers)
-				for (String g: genders)
-					possForms.add(c +" "+ n +" "+ g);
-	}
 	
 	public char getGender() {return gender;}
 	public void addMeaning(String m) {meaning += m;}
-	public String toString() {return meaning;}
-	public void reduce() {reduction++;}
 	public String getPart() {return "N";}
 	public ArrayList<String> getForms() {return possForms;}
 	public String getF(int idx) {return possForms.get(idx);}
