@@ -2,6 +2,8 @@ package latinparser.words;
 
 import java.util.ArrayList;
 
+import latinparser.Utility;
+
 public class Numeral extends Word {
 	private ArrayList<String> possForms = new ArrayList<String>();
 	private static final int NUM_FORM_START = 32;
@@ -16,7 +18,7 @@ public class Numeral extends Word {
 	/* addRemainingForms
 	 * adds all word forms to the list of possible forms
 	 */
-	public void addRemainingForms() {
+	private void addRemainingForms() {
 		if (possForms.size() == 1)
 			possForms.remove(0);
 		for (String c: new String[] {"NOM", "GEN", "DAT", "ACC", "ABL", "VOC"})
@@ -52,13 +54,14 @@ public class Numeral extends Word {
 	 */
 	public int canBe(String f) {
 		boolean negated = f.charAt(0) == '!';
-		String absoluteForm = f.substring(1); // form without '!'
+		String absoluteForm = Utility.expandNounAdjForm(f, negated);
 		
 		for (int i = 0; i < possForms.size(); i++) {
 			String currForm = possForms.get(i);
-			if (!negated && currForm.contains(f)) {
+			boolean match = Utility.nounAdjMatch(currForm, absoluteForm);
+			if (!negated && match) {
 				return i;
-			} else if (negated && !currForm.contains(absoluteForm)) {
+			} else if (negated && !match) {
 				return i;
 			}
 		}
@@ -71,13 +74,14 @@ public class Numeral extends Word {
 	 */
 	public void setForm(String form) {
 		boolean negated = form.charAt(0) == '!';
-		String absoluteForm = form.substring(1); // part without '!'
+		String absoluteForm = Utility.expandNounAdjForm(form, negated);
 		
 		for (int i = possForms.size()-1; i >= 0; i--) {
 			String currForm = possForms.get(i);
-			if (!negated && !currForm.contains(form)) {
+			boolean match = Utility.nounAdjMatch(currForm, absoluteForm);
+			if (!negated && !match) {
 				possForms.remove(i);
-			} else if (negated && currForm.contains(absoluteForm)) {
+			} else if (negated && match) {
 				possForms.remove(i);
 			}
 		}

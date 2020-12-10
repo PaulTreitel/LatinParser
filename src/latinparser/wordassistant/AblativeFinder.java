@@ -63,7 +63,7 @@ public class AblativeFinder {
 		
 		//TODO revisit adjectives (most slip by)
 		for (DictEntry d: ablatives)
-			d.setClaimed();
+			d.claim();
 		for (int i = start; i < upTo; i++)
 			for (String part: new String[] {"N", "ADJ", "NUM"})
 			if (dict.get(i).canBe(part) != -1 && dict.get(i).getWord(part).canBe("!ABL") != -1)
@@ -154,7 +154,7 @@ public class AblativeFinder {
 				for (String part: new String[] {"N", "PRON"}) {
 					if (dict.get(a).canBe(part) != -1) {
 						for (String f: dict.get(a).getWord(part).getForms())
-							if (!u.nounAdjUsable(f,cng))
+							if (!Utility.nounAdjMatch(f,cng))
 								break p;
 						dict.get(a).setPart(part);
 						dict.get(a).getWord(0).setForm(cng.substring(0, cng.length()-2));
@@ -205,7 +205,7 @@ public class AblativeFinder {
 		for (int i = start; i < upTo; i++)
 			if (dict.get(i).canBe("N") != -1)
 				for (String f: dict.get(i).getWord("N").getForms())
-					if (u.nounAdjUsable(f, form))
+					if (Utility.nounAdjMatch(f, form))
 						return true;
 		return false;
 	}

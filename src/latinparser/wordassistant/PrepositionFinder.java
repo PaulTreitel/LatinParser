@@ -58,7 +58,7 @@ public class PrepositionFinder {
 			}
 		}
 		for (DictEntry d: phrases) {
-			d.setClaimed();
+			d.claim();
 		}
 		return phrases;
 	}

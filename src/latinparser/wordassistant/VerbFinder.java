@@ -37,12 +37,6 @@ public class VerbFinder {
 		upTo = tIdx;
 	}
 	
-	public ArrayList<Integer> getVerbIndices() {return vIndices;}
-	
-	public ArrayList<String> getSubjectForm() {return subjectForm;}
-	
-	public ArrayList<String> getObjectForm() {return objectForm;}
-	
 	//TODO test getVerbInfo()
 	//TODO infinitives (indirect statement)?
 	//TODO make verb-borrowing conditional on there being a subj/obj not part of a list
@@ -57,7 +51,7 @@ public class VerbFinder {
 		}
 		for (int idx: vIndices) {
 			dict.get(idx).setPart("V");
-			dict.get(idx).setClaimed();
+			dict.get(idx).claim();
 		}
 		findTwoWordVerbs();
 		setSubjectForms();
@@ -234,7 +228,7 @@ public class VerbFinder {
 			vIndices.add(vIndices.indexOf(sum)+1, ppl);
 			
 			// claims the participle for Verb
-			dict.get(ppl).setClaimed();
+			dict.get(ppl).claim();
 			
 			ppl = checkForParticiple();
 			sum = checkForSumPart();
@@ -280,4 +274,10 @@ public class VerbFinder {
 		}
 		return -1;
 	}
+	
+	public ArrayList<Integer> getVerbIndices() {return vIndices;}
+	
+	public ArrayList<String> getSubjectForm() {return subjectForm;}
+	
+	public ArrayList<String> getObjectForm() {return objectForm;}
 }

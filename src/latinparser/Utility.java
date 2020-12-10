@@ -22,7 +22,7 @@ public class Utility {
 	}
 	
 	/**
-	 * Takes in a DictEntry that can be a (pro)noun and generates a list
+	 * Takes in a DictEntry that can be a Noun or Pronoun and generates a list
 	 * of adjectives in the clause that can match with its first form only.
 	 * This assumes that the first form is the one you want to match against.
 	 * @param d - the DictEntry to match against
@@ -49,7 +49,7 @@ public class Utility {
 				boolean exactFormMatch = true;
 				for (String x: currEntry.getWord(type).getForms()) {
 					// ensures that there are no possible forms that don't match
-					if (!nounAdjUsable(x, form)) {
+					if (!nounAdjMatch(x, form)) {
 						exactFormMatch = false;
 						break;
 					}
@@ -63,20 +63,59 @@ public class Utility {
 	}
 	
 	/**
+	 * Takes a partial form for a Noun or Adjective (Pronoun and Numeral also work)
+	 * and expands it into a full form, using '_' as a filler character.
+	 * @param f - the partial form
+	 * @param negated - whether or not the form is negated (starts with a '!')
+	 * @return the expanded form, without a negation and with filler characters
+	 */
+	public static String expandNounAdjForm(String f, boolean negated) {
+		if (negated) {
+			f = f.substring(1);
+		}
+		if (f.length() == 3) {
+			if (f.charAt(0) == 'S' || f.charAt(0) == 'P') {
+				f = "___ " + f;
+			} else {
+				f = f + " _ _";
+			}
+		} else if (f.length() == 1) {
+			if (f.equals("S") || f.equals("P")) {
+				f = "___ " + f + " _";
+			} else {
+				f = "___ _ " + f;
+			}
+		} else if (f.length() == 5) {
+			if (f.charAt(4) == 'S' || f.charAt(4) == 'P') {
+				f = f + " _";
+			} else {
+				f = f.substring(0, 3) + " _ " + f.substring(4);
+			}
+		}
+		return f;
+	}
+	
+	/**
 	 * Takes in two strings, both noun forms like "NOM S F",
 	 * returns true if the two forms are compatible, false otherwise
 	 * @param first - the first noun form
 	 * @param second - the second noun form
 	 * @return true if the two noun forms are compatible, false otherwise
 	 */
-	public boolean nounAdjUsable(String first, String second) {
+	public static boolean nounAdjMatch(String first, String second) {
 		// 4 is position of plural ("S" or "P") in form
-		boolean plurals = first.charAt(4) == second.charAt(4);
+		char[] plural = {first.charAt(4), second.charAt(4)};
 		// 6 is position of gender ("F", "M", "N", "C", or "X") in form
-		boolean genders = isGenderMatch(first.charAt(6), second.charAt(6));
+		char[] gender = {first.charAt(4), second.charAt(4)};
 		// case is indicated by the first 3 letters of the string
-		boolean cases = first.substring(0, 3).equals(second.substring(0, 3));
-		return plurals && genders && cases;
+		String[] cases = {first.substring(0, 3), second.substring(0, 3)};
+		
+		boolean pluralMatch = plural[0] == plural[1] || plural[0] == '_' || plural[1] == '_';
+		boolean genderMatch = isGenderMatch(gender[0], gender[1]) || 
+				gender[0] == '_' || gender[1] == '_';
+		boolean caseMatch = cases[0].equals(cases[1]) || 
+				cases[0].equals("___") || cases[1].equals("___");
+		return pluralMatch && genderMatch && caseMatch;
 	}
 	
 	/**
@@ -87,7 +126,7 @@ public class Utility {
 	 * @param second - the second noun form
 	 * @return true if the genders are compatible, false otherwise
 	 */
-	public boolean isGenderMatch(char first, char second) {
+	private static boolean isGenderMatch(char first, char second) {
 		if (first == 'X' || second == 'X') {
 			return true;
 		} else if ((first == 'C' && second == 'N') || (first == 'N' && second == 'C')) {
@@ -99,7 +138,7 @@ public class Utility {
 	}
 	
 	/**
-	 * Returns the number of DictEntries in the clause that match both
+	 * Returns the number of DictEntries in the clause that can match both
 	 * the given part of speech and the given form
 	 * @param part - the part of speech to match
 	 * @param form - the word form to match
@@ -109,10 +148,35 @@ public class Utility {
 		int n = 0;
 		for (int i = start; i < upTo; i++) {
 			DictEntry d = dict.get(i);
-			if (d.canBe(part) != -1 && d.getWord(part).canBe(form) != -1) {
-				n++;
+			if (d.canBe(part) == -1) {
+				continue;
 			}
+			if (d.getWord(part).canBe(form) == -1) {
+				continue;
+			}
+			n++;
 		}
 		return n;
+	}
+	
+	/**
+	 * Searches through the clause for an entry which can match both the given
+	 * part of speech and the given form.
+	 * @param part - the part of speech to match
+	 * @param form - the word form to match
+	 * @return the first entry to meet both criteria, or null if there are none
+	 */
+	public DictEntry getWordByForm(String part, String form) {
+		for (int i = start; i < upTo; i++) {
+			DictEntry currEntry = dict.get(i);
+			if (currEntry.canBe(part) == -1) {
+				continue;
+			}
+			if (currEntry.getWord(part).canBe(form) == -1) {
+				continue;
+			}
+			return currEntry;
+		}
+		return null;
 	}
 }

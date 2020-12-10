@@ -2,8 +2,6 @@ package latinparser;
 
 
 import java.util.ArrayList;
-
-import latinparser.words.Adjective;
 import latinparser.words.*;
 
 public class DictEntry {
@@ -85,18 +83,20 @@ public class DictEntry {
 				possible.get(possible.size()-1).addPossForm(entry[x]);
 			}
 
-			// for when WORDS sometimes lists a 2nd word after the 1st
-			// with no forms in between
+			// for when WORDS sometimes lists a 2nd word after the 1st with no forms in between
 			if (possible.get(possible.size()-1).getForms().size() == 0 && 
 					possible.size() != 1) {
 				copyPossForms();
 			}
 		}
 
-		// since (most) number words are indeclinable
-		// TODO handle declinable number words
+		/* if there's 1 form and it starts with X, the number is indeclinable
+		 * and it could be any possible form */
 		if (i != -1 && parts[i].equals("NUM")) {
-			possible.get(possible.size()-1).addPossForm("1");
+			Word w = possible.get(possible.size() - 1);
+			if (w.getForms().size() == 1 && w.getForm(0).charAt(0) == 'X') {
+				possible.get(possible.size()-1).addPossForm("1");
+			}
 		}
 	}
 	
@@ -191,13 +191,16 @@ public class DictEntry {
 	 * allows for negation by "!" prefix - if the DictEntry can't be that part of speech
 	 */
 	public int canBe(String part) {
-		for (int a = 0; a < possible.size(); a++)
-			if (part.charAt(0) != '!' && possible.get(a).getPart().equals(part))
+		boolean negated = part.charAt(0) == '!';
+		for (int a = 0; a < possible.size(); a++) {
+			String currPart = possible.get(a).getPart();
+			if (!negated && currPart.equals(part)) {
 				return a;
-		//allows for negation (ie canNotBe) 
-			else if (part.charAt(0) == '!' &&
-					!possible.get(a).getPart().equals(part.substring(1)))
+			//allows for negation (ie canNotBe) 
+			} else if (negated && !currPart.equals(part.substring(1))) {
 				return a;
+			}
+		}
 		return -1;
 	}
 	
@@ -227,31 +230,6 @@ public class DictEntry {
 			possible.get(possible.size()-1).addPossForm(form);
 	}
 	
-	/* getW
-	 * get a particular word by index or by part of speech
-	 */
-	public Word getWord(int idx) {return possible.get(idx);}
-	public Word getWord(String part) {
-		return possible.get(canBe(part));
-	}
-	
-	/* removeForm
-	 * removes a possible Word by index
-	 */
-	public void removeForm(int idx) {possible.remove(idx);}
-	
-	/* swapForm
-	 * removes a Word from the start of the list, then adds it to the end
-	 */
-	public void swapForm() {possible.add(possible.remove(0));}
-	
-	public void setClaimed() {claimed = true;}
-	public boolean isClaimed() {return claimed;}
-	
-	public char getPunct() {return punctuation;}
-	public String toString() {return word;}
-	public ArrayList<Word> getWords() {return possible;}
-
 	public void addPart(String part, String mean, ArrayList<String> forms) {
 		addWordToEntry(new String[] {part}, mean, "[XXXXX]");
 		for (String f: forms) {
@@ -259,6 +237,37 @@ public class DictEntry {
 			possible.get(possible.size()-1).addPossForm(toAdd);
 		}
 	}
+	
+	/**
+	 * Gets a Word by its index in the list of possible Words.
+	 * @param idx - the index of the desired Word
+	 * @return the Word at the given index 
+	 */
+	public Word getWord(int idx) {return possible.get(idx);}
+	
+	/**
+	 * Gets a Word by its part of speech in the list of possible Words.
+	 * @param part - the part of speech of the desired Word
+	 * @return the first Word with the given part of speech
+	 */
+	public Word getWord(String part) {
+		return possible.get(canBe(part));
+	}
+	
+	/**
+	 * Removes a Word from the start of the list of possible Words, then adds it
+	 * to the end.
+	 */
+	public void swapForm() {possible.add(possible.remove(0));}
+	
+	public void removeForm(int idx) {possible.remove(idx);}
+	
+	public void claim() {claimed = true;}
+	public boolean isClaimed() {return claimed;}
+	
+	public char getPunct() {return punctuation;}
+	public String toString() {return word;}
+	public ArrayList<Word> getWords() {return possible;}
 }
 
 

@@ -15,7 +15,7 @@ public class Clause {
 	private boolean[] revisitSubjs = new boolean[1];
 	private boolean[] revisitObjs = new boolean[1];
 	private boolean processed;
-	private boolean revisitPreps;
+	private boolean revisitPreps = false;
 	//private boolean twoWordV;
 	private int start;
 	private int upTo;
@@ -28,13 +28,20 @@ public class Clause {
 	private ArrayList<DictEntry> ablatives;
 	private ArrayList<DictEntry> subjects;
 	
-	public Clause(ArrayList<DictEntry> d, int startIndex, int uptoIndex,
+	/**
+	 * creates a Clause object
+	 * @param d - a list representing the dictionary entries for each word in the clause
+	 * @param sIdx - the start index of the clause within d
+	 * @param eIdx - the end index of the clause within d (the clause goes up to,
+	 * but does not include eIdx)
+	 * @param checkCommas - whether there are commas within the clause or not
+	 */
+	public Clause(ArrayList<DictEntry> d, int sIdx, int eIdx,
 			boolean checkCommas) {
 		dict = d;
-		start = startIndex;
-		upTo = uptoIndex;
+		start = sIdx;
+		upTo = eIdx;
 		processed = checkCommas;
-		revisitPreps = false;
 		u = new Utility(dict, start, upTo);
 	}
 	
@@ -44,8 +51,9 @@ public class Clause {
 	 *  - String translate()
 	 */
 	
-	/* process
-	 * generates an arraylist of subclauses, separated by commas in the text
+	/**
+	 * Generates an arraylist of subclauses, separated by commas in the text
+	 * @return the list of subclauses
 	 */
 	private ArrayList<Clause> process() {
 		ArrayList<Clause> subclauses = new ArrayList<Clause>();
@@ -61,8 +69,9 @@ public class Clause {
 		return subclauses;
 	}
 	
-	/* translateSubclauses
+	/**
 	 * combines and returns the translations of each subclause
+	 * @return the combined translation of all subclauses
 	 */
 	private String translateSubclauses() {
 		ArrayList<Clause> subclauses = process();
@@ -109,9 +118,9 @@ public class Clause {
 		//char clauseType = VFinder.setClauseType(verbIdx);
 		//System.out.println(clauseType);
 		
+		String[] objectForms = objectForm.toArray(new String[] {});
 		if (!objectForm.contains("NOM")) {
-			objects = getWordsOfCase(objectForm, 
-					objectForm.toArray(new String[] {}), revisitObjs);
+			objects = getSubjectsObjects(objectForms, revisitObjs);
 		}
 		
 		AblativeFinder ABLFinder = new AblativeFinder(dict, start, upTo, u); 
@@ -119,11 +128,11 @@ public class Clause {
 		
 		matchAdjectives();
 		
-		subjects = getWordsOfCase(subjectForm, new String[] {}, revisitSubjs);
+		String[] subjectForms = generateSubjForms();
+		subjects = getSubjectsObjects(subjectForms, revisitSubjs);
 		
 		if (objectForm.contains("NOM")) {
-			objects = getWordsOfCase(objectForm, 
-					objectForm.toArray(new String[] {}), revisitObjs);
+			objects = getSubjectsObjects(objectForms, revisitObjs);
 		}
 		
 		System.out.println("SUBJECTS "+ subjects);
@@ -144,8 +153,9 @@ public class Clause {
 		
 		System.out.print("UNCLAIMED: ");
 		for (int i = start; i < upTo; i++)
-			if (!dict.get(i).isClaimed())
+			if (!dict.get(i).isClaimed()) {
 				System.out.print(dict.get(i) +" ");
+			}
 		System.out.println("\n");
 		
 		return " ";
@@ -154,227 +164,205 @@ public class Clause {
 	
 	/* ADJECTIVE MATCHING METHODS
 	 *  - void matchAdjectives
-	 *  - void addToArray(DictEntry add, DictEntry find)
-	 *  - DictEntry locateNoun(String form)
-	 *  - void findMatchForAdjective(int idx)
-	 *  - void setMatchingAdj(int idx, String part)
-	 *  - int getNumMatchingAdj(String part, String form, int originIdx)
+	 *  - void addToList(DictEntry search, DictEntry add)
+	 *  - boolean findMatchForAdjective(int idx)
+	 *  - void setMatchingNoun(int idx, String part)
 	 *  TODO merge with other getNum methods
 	 *  TODO cleanup & generalize noun-adjective matching methods
-	 * USES
-	 *  - boolean checkIfNounAdjUsable(String toCheck, String checkAgainst)
 	 */
 	
 	
-	/* matchAdjectives
-	 * goes through clause and attempts to pair each adjective and number
-	 * with exactly one noun
-	 * if there is a pair and the adjective cannot be another part of speech,
-	 * it will restrict the adjective to just that matching form
+	/**
+	 * Goes through the clause and attempts to pair each Adjective and Numeral
+	 * with exactly one Noun. If there is a pair and the adjective cannot be
+	 * another part of speech, it will restrict the adjective to just that
+	 * matching form.
 	 */
 	private void matchAdjectives() {
+		String[] parts = new String[] {"ADJ", "NUM"};
 		for (int i = start; i < upTo; i++) {
-			if (dict.get(i).isClaimed())
+			DictEntry currEntry = dict.get(i);
+			if (currEntry.isClaimed())
 				continue;
 
-			for (String part: new String[] {"ADJ", "NUM"}) {
-				if (dict.get(i).canBe(part) == -1)
+			for (String part: parts) {
+				if (currEntry.canBe(part) == -1)
 					continue;
-				if (!findMatchForAdjective(i))
+				if (!findMatchForAdj(i)) // TODO why does this work?
 					continue;
 				
-				String form = dict.get(i).getWord(part).getForm(0);
+				String form = currEntry.getWord(part).getForm(0);
 				form = form.substring(0, form.length()-4);
-				DictEntry attached = locateNoun(form);
+				DictEntry attached = u.getWordByForm("N", form);
+				if (attached == null)
+					attached = u.getWordByForm("PRON", form);
 				
-				if (attached != null && dict.get(i).canBe("!"+part) == -1) {
-					addToList(dict.get(i), attached);
+				if (attached != null && currEntry.canBe("!"+part) == -1) {
+					addToList(attached, currEntry);
 				}
 			}
-
 		}
 	}
 	
-	/* addToList
-	 * checks if 'find' is in any of the parsing lists
-	 * if so, it adds 'add' to that list
-	 * TODO update addToList as needed
+	/**
+	 * Looks for `search` in the set of lists (preps, objects, subjects,
+	 * ablatives). If found, it will add `add` to that list immediately after `search`
+	 * @param search - the entry to search for in the lists
+	 * @param add - the entry to add right after the search entry
 	 */
+	// TODO update addToList as needed
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void addToList(DictEntry add, DictEntry find) {
+	private void addToList(DictEntry search, DictEntry add) {
 		ArrayList lists[] = {preps, objects, ablatives, subjects};
 		for (ArrayList l : lists) {
-			if (l != null && l.indexOf(find) != -1) {
-				add.setClaimed();
-				l.add(l.indexOf(find)+1, add);
+			if (l != null && l.indexOf(search) != -1) {
+				add.claim();
+				l.add(l.indexOf(search)+1, add);
 				return;
 			}
 		}
 	}
-	
-	/* locateNoun
-	 * searches through clause for a noun/pronoun that is compatible with
-	 * the given form
-	 * returns the word if it finds one, returns null otherwise
+
+	/**
+	 * Takes the index of an Adjective or Numeral and determines how many Nouns
+	 * and Pronouns it is compatible with. If it is only compatible with one
+	 * other word, then it will pair those two together.
+	 * @param idx - the index of the Adjective or Numberal to pair
+	 * @return true if it was able to pair the adjective, false otherwise
 	 */
-	private DictEntry locateNoun(String form) {
-		for (int i = start; i < upTo; i++) {
-			for (String part : new String[] {"N", "PRON"}) {
-				if (dict.get(i).canBe(part) == -1)
-					continue;
-				for (String f: dict.get(i).getWord(part).getForms())
-					if (u.nounAdjUsable(f, form))
-						return dict.get(i);
-			}
-	}
-		return null;
-	}
-	
-	/* findMatchForAdjective
-	 * takes in the index of an adjective (or numeral) and checks how many nouns
-	 * and pronouns in the clause it is compatible with
-	 */
-	private boolean  findMatchForAdjective(int idx) {
+	private boolean findMatchForAdj(int idx) {
 		int numWords = 0;
-		String part;
 		ArrayList<String> matchingForms = new ArrayList<String>();
-		if (dict.get(idx).canBe("ADJ") != -1)
-			part = "ADJ";
-		else
-			part = "NUM";
+		DictEntry d = dict.get(idx);
+		String part = (d.canBe("ADJ") != -1) ? "ADJ" : "NUM";
 		
-		for (String form: dict.get(idx).getWord(part).getForms()) {
+		
+		for (String form: d.getWord(part).getForms()) {
 			// removes type (positive, comparative, superlative, cardinal, etc)
 			if (part.equals("ADJ"))
 				form = form.substring(0, form.length()-4);
-			int delta = getNumMatchingAdj("N", form, idx);
-			delta += getNumMatchingAdj("PRON", form, idx);
+			int delta = u.getNumWordsOfForm("N", form) + u.getNumWordsOfForm("PRON", form);
+			// don't count the current word if it could be a Noun or Pronoun
+			if (d.canBe("N") != -1) {
+				delta--;
+			}
+			if (d.canBe("PRON") != -1) {
+				delta--;
+			}
 			numWords += delta;
 			if (delta > 0)
 				matchingForms.add(form);
 		}
 				
 		if (numWords == 1) {
-			dict.get(idx).setPart(part);
-			dict.get(idx).getWord(part).setForm(matchingForms.get(0));
-			setMatchingNoun(idx, matchingForms.get(0));
+			d.setPart(part);
+			// TODO why 0?
+			d.getWord(part).setForm(matchingForms.get(0));
+			setMatchingNoun(matchingForms.get(0));
 			return true;
 		}
 		return false;
 	}
 	
-	/* setMatchingNoun
-	 * takes an index and a form
-	 * sets the noun which matches the form and does not match the index so that
-	 * it only has the matching form
+	/**
+	 * Sets the first Noun or Pronoun that can match the given form
+	 * so that it can only be that form.
+	 * @param form - the noun form to use
 	 */
-	private void setMatchingNoun(int originIdx, String form) {
-		for (int i = start; i < upTo; i++) {
-			if (i == originIdx)
-				continue;
-			for (String part : new String[] {"NOUN", "PRONOUN"}) {
-				if (dict.get(i).canBe(part) == -1)
-					continue;
-				for (String f2: dict.get(i).getWord(part).getForms())
-					if (u.nounAdjUsable(form, f2)) {
-						dict.get(i).getWord(part).setForm(f2);
-						return;
-					}
+	private void setMatchingNoun(String form) {
+		DictEntry matchingNoun = null;
+		for (String part: new String[] {"N", "PRON"}) {
+			matchingNoun = u.getWordByForm(part, form);
+			if (matchingNoun != null) {
+				// TODO also set part?
+				matchingNoun.getWord(part).setForm(form);
+				return;
 			}
 		}
 	}
 	
-	/* getNumMatchingAdj
-	 * returns the number of words that can match a given part of speech and
-	 * are compatible with a given form
-	 */
-	private int getNumMatchingAdj(String part, String form, int originIdx) {
-		int n = 0;
-		for (int i = start; i < upTo; i++) {
-			if (dict.get(i).canBe(part) == -1)
-				continue;
-			if (i == originIdx)
-				continue;
-			for (String f2: dict.get(i).getWord(part).getForms())
-				if (u.nounAdjUsable(form, f2))
-					n++;
-		}
-		return n;
-	}
 	
 	/* SUBJECT/OBJECT METHODS
-	 *  - ArrayList<DictEntry> getWordsOfCase(ArrayList<String> typeForm, String[] c, boolean[] revisit)
-	 *  - void canBeSubjObj(int i, ArrayList<DictEntry> subjObjs, String form, boolean[] revisit)
-	 *  - boolean adjectiveFormMatches(DictEntry d, String part, String form)
-	 *  - void addWordOfCase(ArrayList<DictEntry> subjObjs, int i, String form)
-	 *  - String[] generateCaseList(String[] c, int formsLength)
-	 * USES
-	 *  - ArrayList<DictEntry> getAdjectivesFor(DictEntry d)
+	 *  - ArrayList<DictEntry> getSubjectsObjects(String[] cases, boolean[] revisit)
+	 *  - boolean isSubjObjMatch(DictEntry d, String form, boolean[] revisit)
+	 *  - boolean adjFormMatches(DictEntry d, String part, String form)
+	 *  - void addWordsByForm(ArrayList<DictEntry> subjObjs, DictEntry d, String form)
+	 *  - String[] generateSubjForms()
 	 */
 	
+	/**
+	 * Takes a list of noun forms. Gathers all Nouns and Pronouns that *must*
+	 * fit those forms, as well as any Adjectives or Numerals that accompany
+	 * them.
+	 * @param forms - the list of cases that the nouns must match
+	 * @param revisit - reference for a flag to revisit the current operation
+	 * @return list of nouns that must fit the given cases, along with their
+	 * adjectives
+	 */
 	//TODO handle multiple-N subjects/objects with CONJ separator
 	//TODO handle NOM INFs, distinguish from complementary INFs and indirect statement
 	//TODO ensure there are no double-additions to typeForm
 	//TODO test getSubjects()
-	private ArrayList<DictEntry> getWordsOfCase(ArrayList<String> typeForm,
-			String[] c, boolean[] revisit) {
-		// typeForm is subjectForm or objectForm from VerbFinder
-		// c is 
-		String[] cases = generateCaseList(c, typeForm.size());
+	private ArrayList<DictEntry> getSubjectsObjects(String[] forms, boolean[] revisit) {
 		ArrayList<DictEntry> subjObjs = new ArrayList<DictEntry>();
-		for (int f = 0; f < typeForm.size(); f++)
-			for (int i = start; i < upTo; i++)
-				canBeSubjObj(dict.get(i), subjObjs, 
-						cases[f]+typeForm.get(f).substring(2), revisit);
-		for (DictEntry d: subjObjs)
-			d.setClaimed();
+		for (int f = 0; f < forms.length; f++) {
+			for (int i = start; i < upTo; i++) {
+				DictEntry currEntry = dict.get(i);
+				if (isSubjObjMatch(currEntry, forms[f], revisit)) {
+					addWordsByForm(subjObjs, currEntry, forms[f]);
+				}
+			}
+		}
 		return subjObjs;
 	}
 	
-	private void canBeSubjObj(DictEntry d, ArrayList<DictEntry> subjObjs,
-			String form, boolean[] revisit) {
-		// TODO figure out what this does
-		if (form.substring(2, 3).equals(form.substring(3, 4)))
-			form = form.substring(0, 3);
-		
+	/**
+	 * Determines if the given DictEntry has take the given form. If the result
+	 * is inconclusive, it will set revisit[0] to be true.
+	 * @param d - the DictEntry to look at
+	 * @param form - the form to check for
+	 * @param revisit - reference for a flag to revisit the current operation
+	 * @return true if d has to take the form, false otherwise
+	 */
+	private boolean isSubjObjMatch(DictEntry d, String form, boolean[] revisit) {	
 		int numNouns = u.getNumWordsOfForm("N", form) + 
 				u.getNumWordsOfForm("PRON", form);
 		
 		for (String part: new String[] {"N", "PRON"}) {
-			
-			boolean canBePart = d.canBe(part) != -1;
-			if (d.isClaimed() || !canBePart)
+			if (d.isClaimed() || d.canBe(part) == -1)
 				continue;
 			
+			boolean canBeForm = d.getWord(part).canBe(form) != -1;
 			boolean mustBeForm = d.getWord(part).canBe("!"+form) == -1;
-			
-			if (numNouns == 1 && d.getWord(part).canBe(form) != -1) {
-				addWordOfCase(subjObjs, d, form);
-				return;
-			} else if (d.canBe("!"+part) == -1 && mustBeForm) {
-				addWordOfCase(subjObjs, d, form);
-			} else if (mustBeForm) {
-				if (formsMatchADJN(d, part, form))
-					addWordOfCase(subjObjs, d, form);
-				else
-					revisit[0] = true;
+			boolean adjVariantOfNoun = d.canBe("ADJ") != -1 && !adjFormsMatchNoun(d, part, form);
+			if (mustBeForm && adjVariantOfNoun) {
+				revisit[0] = true;
+				return false;
 			}
+			return (numNouns == 1 && canBeForm) || mustBeForm;
 		}
+		return false;
 	}
 	
-	/* formsMatchADJN
-	 * if the DictEntry can only be an adjective or N/PRON and all adjective
-	 * forms match the given form, it sets the word to be N/PRON
-	 * and returns true; otherwise it does nothing and returns false
-	 * 
-	 * used for cases where meaning has identical N and ADJ forms
-	 * in the use-cases, the variable part is always "N" or "PRON"
+	/**
+	 *If the DictEntry can only be an adjective or Noun and all adjective
+	 * forms match the given form, it sets the word to be Noun
+	 * and returns true; otherwise it does nothing and returns false.
+	 * This is useful for cases where a word is an adjective but it also has a
+	 * substantive noun counterpart. NOTE: this assumes we want the adjective
+	 * version and not the noun version (which may be distinct from an adjective
+	 * used substantively).
+	 * @param d - a DictEntry that can be a Noun/Pronoun or Adjective
+	 * @param part - either "N" for Noun or "PRON" for pronoun
+	 * @param form - the form of the word to match against
+	 * @return true if it is able to remove the Adjective part, leaving only the
+	 * Noun/Pronoun part; false otherwise
 	 */
-	private boolean formsMatchADJN(DictEntry d, String part, String form) {
+	private boolean adjFormsMatchNoun(DictEntry d, String part, String form) {
 		for (Word w: d.getWords())
 			if (!w.getPart().equals(part) && !w.getPart().equals("ADJ"))
 				return false;
-
+		
 		for (String f: d.getWord("ADJ").getForms()) {
 			if (!f.contains(form))
 				return false;
@@ -383,25 +371,44 @@ public class Clause {
 		return true;
 	}
 	
-	private void addWordOfCase(ArrayList<DictEntry> subjObjs, DictEntry d, String form) {
-		int idx = subjObjs.size();
+	/**
+	 * Adds the given DictEntry to the list, then adds all adjectives for that
+	 * word to the list. Sets the part of speech of all the new words to the
+	 * first part in their lists, then sets the form of all the new words to the
+	 * given form. Sets the claimed flag for all words added this way.
+	 * @param subjObjs - the list to add words to
+	 * @param d - the DictEntry to add first
+	 * @param form - the form that all added words must conform to.
+	 */
+	private void addWordsByForm(ArrayList<DictEntry> subjObjs, DictEntry d, String form) {
+		int newWordsIdx = subjObjs.size();
 		subjObjs.add(d);
 		subjObjs.addAll(u.getAdjectivesFor(d));
-		for (int x = idx; x < subjObjs.size(); x++) {
-			subjObjs.get(x).setPart(subjObjs.get(x).getWord(0).getPart());
-			subjObjs.get(x).getWord(0).setForm(form);
-			subjObjs.get(x).setClaimed();
+		for (int x = newWordsIdx; x < subjObjs.size(); x++) {
+			DictEntry currEntry = subjObjs.get(x);
+			currEntry.setPart(currEntry.getWord(0).getPart());
+			currEntry.getWord(0).setForm(form);
+			currEntry.claim();
 		}
 	}
 	
-	private String[] generateCaseList(String[] c, int formsLength) {
-		if (c.length != 0)
-			return c;
-		String[] a = new String[formsLength];
-		for (int i = 0; i < formsLength; i++)
-			a[i] = "NOM";
+	/**
+	 * Uses the existing subjectForm list to generate an array of Noun forms for
+	 * the subjects of the clause's verbs. subjectForm includes information
+	 * about the person of the subject which is not represented in a Noun form;
+	 * this is why we don't overwrite the subjectForm list.
+	 * @return an array of Noun forms for the subjects of the clause
+	 */
+	private String[] generateSubjForms() {
+		String[] a = new String[subjectForm.size()];
+		for (int i = 0; i < subjectForm.size(); i++) {
+			String currForm = subjectForm.get(i);
+			char number = currForm.charAt(currForm.length() - 1);
+			a[i] = Utility.expandNounAdjForm("NOM " + number, false);
+		}
 		return a;
 	}
+	
 	
 	/* UTILITY METHODS
 	 *  - String toString()
@@ -409,18 +416,23 @@ public class Clause {
 	 *  - void cleanup()
 	 */
 	
-	
+	/**
+	 * generates a string representing the clause
+	 * @return the string representation of the clause
+	 */
 	public String toString() {
-		String str = "";
+		String str = "\"";
 		for (int i = start; i < upTo; i++)
 			str += dict.get(i).toString() + dict.get(i).getPunct() +" ";
-		return str;
+		return str + "\"";
 	}
 
-	/* findVocatives
-	 * finds any vocatives (presumed to be nouns preceded by "O") and declares
-	 * them to be so. Declares all other nouns & adjectives to be not vocatives
+	/**
+	 * Finds any vocatives and declares them to be so, then declares all other
+	 * Nouns, Adjectives, and Pronouns to be not vocatives. A vocative is
+	 * presumed to be preceded with "O".
 	 */
+	//TODO find a more conservative way to do this
 	private void findVocatives() {
 		// first word of a clause can't be a vocative (we assume)
 		for (Word w: dict.get(start).getWords())
@@ -434,7 +446,7 @@ public class Clause {
 				boolean isNoun = w.getPart().equals("N");
 				boolean isPron = w.getPart().equals("PRON");
 				boolean isAdj = w.getPart().equals("ADJ");
-				if (isNoun && isPron && isAdj) {
+				if (isNoun || isPron || isAdj) {
 					if (isVoc) {
 						w.setForm("VOC");
 					} else
@@ -445,10 +457,9 @@ public class Clause {
 		cleanup();
 	}
 	
-	/* cleanup
-	 * looks through the clause and removes any possible words that are not 
-	 * conjunctions, interjections, or prepositions 
-	 * with no valid forms remaining
+	/**
+	 * Looks through the clause and removes any possible words that are not 
+	 * conjunctions, interjections, or prepositions with no valid forms remaining.
 	 */
 	private void cleanup() {
 		String Conj = " CONJ/INTERJ PREP ";
