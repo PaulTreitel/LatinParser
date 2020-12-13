@@ -39,7 +39,7 @@ public class PrepositionFinder {
 		ArrayList<DictEntry> phrases = new ArrayList<DictEntry>();
 		int numPartsTested = 0;
 		for (int idx = start; idx < upTo; idx++) {
-			if (dict.get(idx).canBe("PREP") == -1) {
+			if (!dict.get(idx).canBe("PREP")) {
 				continue;
 			}
 			int s = phrases.size();
@@ -52,7 +52,7 @@ public class PrepositionFinder {
 					idx--;
 				// this Word can't be prep phrase but it could be under a different Word
 				} else {
-					dict.get(idx).removeForm(0);
+					dict.get(idx).removeWord(0);
 					idx--;
 				}
 			}
@@ -72,10 +72,10 @@ public class PrepositionFinder {
 	private void testPrepositionPhrase(int idx, ArrayList<DictEntry> phrases) {
 		String objCase = ((Preposition) (dict.get(idx).getWord("PREP"))).getCase();
 		for (String part: new String[] {"N", "ADJ", "PRON"}) {
-			if (dict.get(idx+1).canBe(part) == -1) {
+			if (!dict.get(idx+1).canBe(part)) {
 				continue;
 			}
-			if (dict.get(idx+1).getWord(part).canBe(objCase) == -1) {
+			if (!dict.get(idx+1).getWord(part).canBe(objCase)) {
 				continue;
 			}
 			dict.get(idx+1).setPart(part);
@@ -100,7 +100,7 @@ public class PrepositionFinder {
 		ArrayList<DictEntry> obj = new ArrayList<DictEntry>();
 		if (numNounsOfCase == 1) {
 			DictEntry sourceWord = dict.get(idx + 1);
-			if (sourceWord.canBe("N") != -1) {
+			if (sourceWord.canBe("N")) {
 				obj.addAll(u.getAdjectivesFor(sourceWord));
 			}
 		} else if (numNounsOfCase > 1) {

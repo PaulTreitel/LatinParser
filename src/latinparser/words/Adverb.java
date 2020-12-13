@@ -2,6 +2,8 @@ package latinparser.words;
 
 import java.util.ArrayList;
 
+import latinparser.Utility;
+
 public class Adverb extends Word {
 	private ArrayList<String> possForms = new ArrayList<String>();
 	private static final int ADV_COMPARISON_START = 28;
@@ -22,30 +24,16 @@ public class Adverb extends Word {
 		return "most " + mean;
 	}
 	
-	/* canBe
-	 * takes a string and checks if it is in the list of possible word forms
-	 * supports negation where the first character of the string is '!'
-	 * returns the index of a possible matching form if there is one, -1 otherwise
+	/* addPossForm
+	 * takes a String representation of a word form and adds it to the list of possible forms
+	 * ignores Early Latin word forms
 	 */
-	public int canBe(String f) {
-		boolean negated = f.charAt(0) == '!';
-		String absoluteForm = f.substring(1); // form without '!'
-		
-		for (int i = 0; i < possForms.size(); i++) {
-			String currForm = possForms.get(i);
-			if (!negated && currForm.contains(f)) {
-				return i;
-			} else if (negated && !currForm.contains(absoluteForm)) {
-				return i;
-			}
+	public void addPossForm(String e) {
+		if (!e.contains("Early")) {
+			possForms.add(e.substring(ADV_COMPARISON_START, ADV_COMPARISON_END));
 		}
-		return -1;
 	}
 	
-	/* setForm
-	 * takes a string and removes any possible word forms that do not match
-	 * supports negation where the first character of the string is '!'
-	 */
 	public void setForm(String form) {
 		boolean negated = form.charAt(0) == '!';
 		String absoluteForm = form.substring(1); // part without '!'
@@ -60,14 +48,25 @@ public class Adverb extends Word {
 		}
 	}
 	
-	/* addPossForm
-	 * takes a String representation of a word form and adds it to the list of possible forms
-	 * ignores Early Latin word forms
-	 */
-	public void addPossForm(String e) {
-		if (!e.contains("Early")) {
-			possForms.add(e.substring(ADV_COMPARISON_START, ADV_COMPARISON_END));
+	
+	public boolean canBe(String f) {
+		return getForm(f) != null;
+	}
+	
+	public String getForm(String formSearch) {
+		boolean negated = formSearch.charAt(0) == '!';
+		String absoluteForm = Utility.expandNounAdjForm(formSearch, negated);
+		
+		for (int i = 0; i < possForms.size(); i++) {
+			String currForm = possForms.get(i);
+			boolean match = Utility.nounAdjMatch(currForm, absoluteForm);
+			if (!negated && match) {
+				return currForm;
+			} else if (negated && !match) {
+				return currForm;
+			}
 		}
+		return null;
 	}
 	
 	public void addMeaning(String m) {meaning += m;}

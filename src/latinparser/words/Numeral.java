@@ -47,31 +47,6 @@ public class Numeral extends Word {
 		possForms.add(e.substring(NUM_FORM_START, NUM_FORM_END));
 	}
 	
-	/* canBe
-	 * takes a string and checks if it is in the list of possible word forms
-	 * supports negation where the first character of the string is '!'
-	 * returns the index of a possible matching form if there is one, -1 otherwise
-	 */
-	public int canBe(String f) {
-		boolean negated = f.charAt(0) == '!';
-		String absoluteForm = Utility.expandNounAdjForm(f, negated);
-		
-		for (int i = 0; i < possForms.size(); i++) {
-			String currForm = possForms.get(i);
-			boolean match = Utility.nounAdjMatch(currForm, absoluteForm);
-			if (!negated && match) {
-				return i;
-			} else if (negated && !match) {
-				return i;
-			}
-		}
-		return -1;
-	}
-	
-	/* setForm
-	 * takes a string and removes any possible word forms that do not match
-	 * supports negation where the first character of the string is '!'
-	 */
 	public void setForm(String form) {
 		boolean negated = form.charAt(0) == '!';
 		String absoluteForm = Utility.expandNounAdjForm(form, negated);
@@ -87,8 +62,29 @@ public class Numeral extends Word {
 		}
 	}
 	
+	public boolean canBe(String f) {
+		return getForm(f) != null;
+	}
+	
+	public String getForm(String formSearch) {
+		boolean negated = formSearch.charAt(0) == '!';
+		String absoluteForm = Utility.expandNounAdjForm(formSearch, negated);
+		
+		for (int i = 0; i < possForms.size(); i++) {
+			String currForm = possForms.get(i);
+			boolean match = Utility.nounAdjMatch(currForm, absoluteForm);
+			if (!negated && match) {
+				return currForm;
+			} else if (negated && !match) {
+				return currForm;
+			}
+		}
+		return null;
+	}
+	
+	public String getForm(int idx) {return possForms.get(idx);}
+	public ArrayList<String> getForms() {return possForms;}
+	
 	public void addMeaning(String m) {meaning += m;}
 	public String getPart() {return "NUM";}
-	public ArrayList<String> getForms() {return possForms;}
-	public String getForm(int idx) {return possForms.get(idx);}
 }

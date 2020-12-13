@@ -332,30 +332,6 @@ public class Verb extends Word {
 		return "were";
 	}
 	
-	/* canBe
-	 * takes a string and checks if it is in the list of possible word forms
-	 * supports negation where the first character of the string is '!'
-	 * returns the index of a possible matching form if there is one, -1 otherwise
-	 */
-	public int canBe(String f) {
-		boolean negated = f.charAt(0) == '!';
-		String absoluteForm = f.substring(1); // form without '!'
-		
-		for (int i = 0; i < possForms.size(); i++) {
-			String currForm = possForms.get(i);
-			if (!negated && currForm.contains(f)) {
-				return i;
-			} else if (negated && !currForm.contains(absoluteForm)) {
-				return i;
-			}
-		}
-		return -1;
-	}
-	
-	/* setForm
-	 * takes a string and removes any possible word forms that do not match
-	 * supports negation where the first character of the string is '!'
-	 */
 	public void setForm(String form) {
 		boolean negated = form.charAt(0) == '!';
 		String absoluteForm = form.substring(1); // part without '!'
@@ -368,6 +344,25 @@ public class Verb extends Word {
 				possForms.remove(i);
 			}
 		}
+	}
+	
+	public boolean canBe(String f) {
+		return getForm(f) != null;
+	}
+	
+	public String getForm(String formSearch) {
+		boolean negated = formSearch.charAt(0) == '!';
+		String absoluteForm = formSearch.substring(1); // form without '!'
+		
+		for (int i = 0; i < possForms.size(); i++) {
+			String currForm = possForms.get(i);
+			if (!negated && currForm.contains(formSearch)) {
+				return currForm;
+			} else if (negated && !currForm.contains(absoluteForm)) {
+				return currForm;
+			}
+		}
+		return null;
 	}
 	
 	public void addMeaning(String m) {meaning += m;}

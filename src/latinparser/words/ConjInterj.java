@@ -17,9 +17,10 @@ public class ConjInterj extends Word {
 	public void setForm(String part) {}
 	public void addPossForm(String e) {}
 	
-	public int canBe(String f) {return -1;}
+	public boolean canBe(String f) {return false;}
+	public String getForm(String formSearch) {return null;}
+	public String getForm(int idx) {return null;}
 	public ArrayList<String> getForms() {return null;}
-	public String getForm(int idx) {return new String();}
 	
 	public void addMeaning(String m) {meaning += m;}
 	public String getPart() {return "CONJ/INTERJ";}

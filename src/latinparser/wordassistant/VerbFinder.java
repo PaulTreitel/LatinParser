@@ -68,8 +68,7 @@ public class VerbFinder {
 				continue;
 			}
 			int vIdx = vIndices.get(i);
-			int formidx = dict.get(vIdx).getWord(0).canBe(" VER");
-			String verbForm = dict.get(vIdx).getWord(0).getForm(formidx);
+			String verbForm = dict.get(vIdx).getWord(0).getForm(" VER");
 			String personNum = verbForm.substring(verbForm.length()-8,
 					verbForm.length()-4);
 			subjectForm.add(personNum);
@@ -217,7 +216,7 @@ public class VerbFinder {
 		while (ppl != -1 && sum != -1) {
 			// ensures that the sum form has a valid tense
 			for (String npart: new String[] {"PERF", "PLUP", "FUTP"}) {
-				if (dict.get(sum).getWord("V").canBe(npart) != -1) {
+				if (dict.get(sum).getWord("V").canBe(npart)) {
 					isTwoWordVerb = false;
 					return;
 				}
@@ -244,9 +243,9 @@ public class VerbFinder {
 		for (int i = start; i < upTo; i++) {
 			if (dict.get(i).isClaimed())
 				continue;
-			if (dict.get(i).canBe("V") == -1)
+			if (!dict.get(i).canBe("V"))
 				continue;
-			if (dict.get(i).getWord("V").canBe("PPL") == -1)
+			if (!dict.get(i).getWord("V").canBe("PPL"))
 				continue;
 			return i;
 		}
@@ -264,11 +263,11 @@ public class VerbFinder {
 				return idx;
 			}
 			
-			if (dict.get(idx).canBe("V") == -1) {
+			if (!dict.get(idx).canBe("V")) {
 				continue;
 			}
 			Word d = dict.get(idx).getWord("V");
-			if (d.canBe("!VER") == -1 && d.toString().substring(0, 3).equals("be;")) {
+			if (!d.canBe("!VER") && d.toString().substring(0, 3).equals("be;")) {
 					return idx;
 			}
 		}

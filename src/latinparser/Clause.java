@@ -96,12 +96,14 @@ public class Clause {
 				return translation;
 		}
 		
+		/*
 		// TODO figure out what the hell this is
 		if (upTo-start == 1) {
 			NotesGenerator NGen = new NotesGenerator(dict, start, upTo);
 			String notes = NGen.getSingleNotes();
 			return dict.get(start).getWord(0).translate(notes);
 		}
+		*/
 		
 		findVocatives();
 		
@@ -186,7 +188,7 @@ public class Clause {
 				continue;
 
 			for (String part: parts) {
-				if (currEntry.canBe(part) == -1)
+				if (!currEntry.canBe(part))
 					continue;
 				if (!findMatchForAdj(i)) // TODO why does this work?
 					continue;
@@ -197,7 +199,7 @@ public class Clause {
 				if (attached == null)
 					attached = u.getWordByForm("PRON", form);
 				
-				if (attached != null && currEntry.canBe("!"+part) == -1) {
+				if (attached != null && !currEntry.canBe("!"+part)) {
 					addToList(attached, currEntry);
 				}
 			}
@@ -234,7 +236,7 @@ public class Clause {
 		int numWords = 0;
 		ArrayList<String> matchingForms = new ArrayList<String>();
 		DictEntry d = dict.get(idx);
-		String part = (d.canBe("ADJ") != -1) ? "ADJ" : "NUM";
+		String part = (d.canBe("ADJ")) ? "ADJ" : "NUM";
 		
 		
 		for (String form: d.getWord(part).getForms()) {
@@ -243,10 +245,10 @@ public class Clause {
 				form = form.substring(0, form.length()-4);
 			int delta = u.getNumWordsOfForm("N", form) + u.getNumWordsOfForm("PRON", form);
 			// don't count the current word if it could be a Noun or Pronoun
-			if (d.canBe("N") != -1) {
+			if (d.canBe("N")) {
 				delta--;
 			}
-			if (d.canBe("PRON") != -1) {
+			if (d.canBe("PRON")) {
 				delta--;
 			}
 			numWords += delta;
@@ -329,12 +331,12 @@ public class Clause {
 				u.getNumWordsOfForm("PRON", form);
 		
 		for (String part: new String[] {"N", "PRON"}) {
-			if (d.isClaimed() || d.canBe(part) == -1)
+			if (d.isClaimed() || !d.canBe(part))
 				continue;
 			
-			boolean canBeForm = d.getWord(part).canBe(form) != -1;
-			boolean mustBeForm = d.getWord(part).canBe("!"+form) == -1;
-			boolean adjVariantOfNoun = d.canBe("ADJ") != -1 && !adjFormsMatchNoun(d, part, form);
+			boolean canBeForm = d.getWord(part).canBe(form);
+			boolean mustBeForm = !d.getWord(part).canBe("!"+form);
+			boolean adjVariantOfNoun = d.canBe("ADJ") && !adjFormsMatchNoun(d, part, form);
 			if (mustBeForm && adjVariantOfNoun) {
 				revisit[0] = true;
 				return false;
@@ -475,7 +477,7 @@ public class Clause {
 					continue;
 				}
 				if (dict.get(i).getWord(j).getForms().size() == 0 && !isCIP) {
-					dict.get(i).removeForm(j);
+					dict.get(i).removeWord(j);
 					j--;
 				}
 			}

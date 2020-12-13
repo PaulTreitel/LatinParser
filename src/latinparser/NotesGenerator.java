@@ -24,7 +24,7 @@ public class NotesGenerator {
 	
 	public String getSingleNotes() {
 		String prep = "";
-		if (dict.get(start).canBe(dict.get(start-1).getWord(0).getPart()) != -1) {
+		if (dict.get(start).canBe(dict.get(start-1).getWord(0).getPart())) {
 			// if it can be same part of speech as last word, it is
 			dict.get(start).setPart(dict.get(start-1).getWord(0).getPart());
 			

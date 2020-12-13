@@ -8,10 +8,16 @@ public abstract class Word {
 	protected int reduction = 0;
 	protected String meaning;
 	
-	/* getFreq
-	 * returns the frequency of the word, reduced by `reduction`
-	 * frequency codes are specified by the WORDS program
-	 * codes are converted into integers, then `reduction` is subtracted off
+	
+	public abstract void addPossForm(String e);
+	
+	public abstract String translate(String notes);
+	
+	/**
+	 * Returns the frequency of the word, reduced by `reduction`. Frequency
+	 * codes are specified by the WORDS program. Codes are converted into
+	 * integers, then `reduction` is subtracted off.
+	 * @return the adjusted frequency of the word
 	 */
 	public int getFreq() {
 		char x = codes.charAt(4);
@@ -23,16 +29,33 @@ public abstract class Word {
 		else return 1 - reduction;
 	}
 	
-	public void reduce() {reduction++;}
-	public String toString() {return meaning;}
-	public abstract String getPart();
-	
-	public abstract ArrayList<String> getForms();
-	public abstract String getForm(int idx);
+	/**
+	 * Sets the Word to a certain form by removing every possible form that is
+	 * not that part of speech. Allows for negation by the "!" prefix - to set 
+	 * the Word to not be the given part of speech.
+	 * @param form - the part of speech to set the Word to
+	 */
 	public abstract void setForm(String form);
-	public abstract void addPossForm(String e);
 	
-	public abstract String translate(String notes);
+	/**
+	 * Takes a word form and checks if matches an item the list of possible word
+	 * forms. Supports negation where the first character of the string is '!' -
+	 * if the Word can't be that form.
+	 * @param f - the word form to search for
+	 * @return true if a match is found, false otherwise
+	 */
+	public abstract boolean canBe(String f);
+	
+	/** 
+	 * Reduces the adjusted frequency of the word by 1.
+	 */
+	public void reduce() {reduction++;}
+	
+	public abstract String getForm(String formSearch);
+	public abstract String getForm(int idx);
+	public abstract ArrayList<String> getForms();
+	
+	public abstract String getPart();
 	public abstract void addMeaning(String m);
-	public abstract int canBe(String f);
+	public String toString() {return meaning;}
 }

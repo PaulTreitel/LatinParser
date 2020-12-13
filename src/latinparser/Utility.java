@@ -33,7 +33,7 @@ public class Utility {
 		String[] types = new String[] {"ADJ", "NUM"};
 		ArrayList<DictEntry> adjectives = new ArrayList<DictEntry>();
 		//assumes words & forms are already ordered/narrowed down
-		if (d.canBe("N") != -1)
+		if (d.canBe("N"))
 			form = d.getWord("N").getForm(0);
 		else
 			form = d.getWord("PRON").getForm(0);
@@ -44,7 +44,7 @@ public class Utility {
 				continue;
 			}
 			for (String type: types) {
-				if (currEntry.canBe(type) == -1 || d == currEntry)
+				if (!currEntry.canBe(type) || d == currEntry)
 					continue;
 				boolean exactFormMatch = true;
 				for (String x: currEntry.getWord(type).getForms()) {
@@ -148,10 +148,10 @@ public class Utility {
 		int n = 0;
 		for (int i = start; i < upTo; i++) {
 			DictEntry d = dict.get(i);
-			if (d.canBe(part) == -1) {
+			if (!d.canBe(part)) {
 				continue;
 			}
-			if (d.getWord(part).canBe(form) == -1) {
+			if (!d.getWord(part).canBe(form)) {
 				continue;
 			}
 			n++;
@@ -169,10 +169,10 @@ public class Utility {
 	public DictEntry getWordByForm(String part, String form) {
 		for (int i = start; i < upTo; i++) {
 			DictEntry currEntry = dict.get(i);
-			if (currEntry.canBe(part) == -1) {
+			if (!currEntry.canBe(part)) {
 				continue;
 			}
-			if (currEntry.getWord(part).canBe(form) == -1) {
+			if (!currEntry.getWord(part).canBe(form)) {
 				continue;
 			}
 			return currEntry;

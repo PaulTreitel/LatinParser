@@ -11,11 +11,13 @@ public class DictEntry {
 	private char punctuation;
 	private boolean claimed;
 	
-	//TODO deal with enclitics (like -que)
-	/* DictEntry constructor
-	 * initialized punctuation and word
-	 * converts entries into the Word list possible and orders it by frequency
+	/**
+	 * Creates a DictEntry object.
+	 * @param entries - string representing all of the WORDS output for for the
+	 * DictEntry
+	 * @param origin - the original word
 	 */
+	//TODO deal with enclitics (like -que)
 	public DictEntry(String entries, String origin) {
 		punctuation = '\0';
 		if (".,;:?!".contains(origin.substring(origin.length()-1)))
@@ -34,9 +36,10 @@ public class DictEntry {
 		orderEntries();
 	}
 	
-	/* dictToWord
-	 * takes in an array of lines for a single word-output from WORDS
-	 * turns it into a Word entry and adds it to the list of possible words
+	/**
+	 * Takes in an array of lines for a single word-output from WORDS and turns
+	 * it into a Word entry and adds it to the list of possible words.
+	 * @param entry - the lines of a single dictionary result
 	 */
 	private void dictToWord(String[] entry) {
 		// handles cases with multiple lines of meanings
@@ -60,7 +63,9 @@ public class DictEntry {
 			return;
 		
 		int i = addWordToEntry(parts, mean, dictCodes);
-		addOtherForms(i, parts, entry);
+		if (i != -1) {
+			addOtherForms(parts[i], entry);
+		}
 		
 		// culls any possible words that have no valid forms
 		for (int x = 0; x < possible.size(); x++) {
@@ -74,35 +79,42 @@ public class DictEntry {
 		}
 	}
 	
-	/* addOtherForms
-	 * adds any extra possible forms to the latest possible Word addition
+	/**
+	 * Adds any extra possible forms to the last Word in the list of possible
+	 * Words.
+	 * @param partOfSpeech - the part of speech of the Word
+	 * @param entry - the lines of a single dictionary result
 	 */
-	private void addOtherForms(int i, String[] parts, String[] entry) {
-		if (i != -1 && "N ADJ V ADV NUM".contains(parts[i])) {
+	private void addOtherForms(String partOfSpeech, String[] entry) {
+		Word w = possible.get(possible.size() - 1);
+		if ("N ADJ V ADV NUM".contains(partOfSpeech)) {
 			for (int x = 0; x < entry.length-2; x++) {
-				possible.get(possible.size()-1).addPossForm(entry[x]);
+				w.addPossForm(entry[x]);
 			}
-
 			// for when WORDS sometimes lists a 2nd word after the 1st with no forms in between
-			if (possible.get(possible.size()-1).getForms().size() == 0 && 
-					possible.size() != 1) {
+			if (w.getForms().size() == 0 && possible.size() != 1) {
 				copyPossForms();
 			}
 		}
 
 		/* if there's 1 form and it starts with X, the number is indeclinable
 		 * and it could be any possible form */
-		if (i != -1 && parts[i].equals("NUM")) {
-			Word w = possible.get(possible.size() - 1);
+		if (partOfSpeech.equals("NUM")) {
 			if (w.getForms().size() == 1 && w.getForm(0).charAt(0) == 'X') {
-				possible.get(possible.size()-1).addPossForm("1");
+				w.addPossForm("1");
 			}
 		}
 	}
 	
-	/* addWordToEntry
-	 * adds a new Word to the list of possible Words 
+	/**
+	 * Adds a new Word to the list of possible Words.
+	 * @param parts - the list of parts of speech of the Words
+	 * @param mean - the meaning of the Word
+	 * @param dictCodes - the WORDS codes for word frequency, type, etc
+	 * @return the index of the part of speech in the list of parts
+	 * corresponding to the Word that was added
 	 */
+	// TODO find a way to call this function with only actual parts of speech
 	private int addWordToEntry(String[] parts, String mean, String dictCodes) {
 		int x = possible.size();
 		for (int i = 0; i < parts.length; i++) {
@@ -141,11 +153,13 @@ public class DictEntry {
 		return -1;
 	}
 
-	/* addExceptionWordsToEntry
-	 * checks if the new dictionary entry is a special word and, if so, adds it
-	 * to the list of possible Words
-	 * special word = ignored capital word, pronoun, numerals, suffixes,
-	 *     prefixes, and packons
+	/**
+	 * Checks if the newest dictionary entry is a special entry and, if so, adds
+	 * it to the list of possible Words.
+	 * @param entry - the lines of a single dictionary result
+	 * @param mean - the meaning of the Word
+	 * @param dictCodes - the WORDS codes for word frequency, type, etc
+	 * @return true if a new word is added, false otherwise
 	 */
 	private boolean addExceptionWordsToEntry(String[] entry, String mean, 
 			String dictCodes) {
@@ -173,8 +187,8 @@ public class DictEntry {
 		return false;
 	}
 	
-	/* orderEntries
-	 * orders the possible Words by their frequency
+	/**
+	 * Orders the possible Words based on their frequency.
 	 */
 	private void orderEntries() {
 		for (int i = 1; i < possible.size(); i++)
@@ -185,12 +199,27 @@ public class DictEntry {
 					possible.add(x-1, possible.remove(x));
 	}
 	
-	/* canBe
-	 * determines if the the DictEntry can be a certain part of speech
-	 * returns the index of the Word that can, or -1 if no such Word exists
-	 * allows for negation by "!" prefix - if the DictEntry can't be that part of speech
+	/**
+	 * Determines if the the DictEntry can be a certain part of speech. Allows
+	 * for negation by the "!" prefix - if the DictEntry can't be that part of
+	 * speech.
+	 * @param part - the part of speech to search for
+	 * @return true if there is a word matching the given part of speech, false
+	 * otherwise
 	 */
-	public int canBe(String part) {
+	public boolean canBe(String part) {
+		return getWordIdx(part) != -1;
+	}
+	
+	/**
+	 * Gets the index of the first Word that matches the given part of speech.
+	 * Allows for negation by the "!" prefix - if the DictEntry can't be that
+	 * part of speech.
+	 * @param part - the part of speech to search for
+	 * @return the index of the first Word that matches the given part of
+	 * speech, -1 otherwise
+	 */
+	public int getWordIdx(String part) {
 		boolean negated = part.charAt(0) == '!';
 		for (int a = 0; a < possible.size(); a++) {
 			String currPart = possible.get(a).getPart();
@@ -204,10 +233,11 @@ public class DictEntry {
 		return -1;
 	}
 	
-	/* setPart
-	 * sets the DictEntry to a certain part of speech by removing every 
-	 * possibility that is not that part of speech
-	 * also allows negations when the first character is '!'
+	/**
+	 * Sets the DictEntry to a certain part of speech by removing every
+	 * possible Word that is not that part of speech. Allows for negation by the
+	 * "!" prefix - to set the DictEntry to not be the given part of speech.
+	 * @param part - the part of speech to set the Word to
 	 */
 	public void setPart(String part) {
 		boolean negated = part.charAt(0) == '!';
@@ -222,14 +252,21 @@ public class DictEntry {
 		}
 	}
 	
-	/* copyPossForms
-	 * copies all form from the 2nd-to-last Word to the last Word
+	/**
+	 * Copies all forms from the 2nd to last Word to the last Word.
 	 */
 	private void copyPossForms() {
 		for (String form: possible.get(possible.size()-2).getForms())
 			possible.get(possible.size()-1).addPossForm(form);
 	}
 	
+	/**
+	 * Adds a new Word to the list of possible Words.
+	 * @param part - the part of speech of the new Word
+	 * @param mean - the meaning of the Word
+	 * @param forms - list of possible forms of the Word
+	 */
+	// TODO figure out what this does and why it does so
 	public void addPart(String part, String mean, ArrayList<String> forms) {
 		addWordToEntry(new String[] {part}, mean, "[XXXXX]");
 		for (String f: forms) {
@@ -239,11 +276,10 @@ public class DictEntry {
 	}
 	
 	/**
-	 * Gets a Word by its index in the list of possible Words.
-	 * @param idx - the index of the desired Word
-	 * @return the Word at the given index 
+	 * Removes a Word from the start of the list of possible Words, then adds it
+	 * to the end.
 	 */
-	public Word getWord(int idx) {return possible.get(idx);}
+	public void swapForm() {possible.add(possible.remove(0));}
 	
 	/**
 	 * Gets a Word by its part of speech in the list of possible Words.
@@ -251,16 +287,11 @@ public class DictEntry {
 	 * @return the first Word with the given part of speech
 	 */
 	public Word getWord(String part) {
-		return possible.get(canBe(part));
+		return possible.get(getWordIdx(part));
 	}
 	
-	/**
-	 * Removes a Word from the start of the list of possible Words, then adds it
-	 * to the end.
-	 */
-	public void swapForm() {possible.add(possible.remove(0));}
-	
-	public void removeForm(int idx) {possible.remove(idx);}
+	public Word getWord(int idx) {return possible.get(idx);}
+	public void removeWord(int idx) {possible.remove(idx);}
 	
 	public void claim() {claimed = true;}
 	public boolean isClaimed() {return claimed;}
