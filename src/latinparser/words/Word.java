@@ -51,6 +51,12 @@ public abstract class Word {
 	 */
 	public void reduce() {reduction++;}
 	
+	/**
+	 * Takes a (partial) word form and returns the first possible word form that
+	 * matches against the input. 
+	 * @param formSearch - the partial word form to search for
+	 * @return the first matching word form, or null if there are none
+	 */
 	public abstract String getForm(String formSearch);
 	public abstract String getForm(int idx);
 	public abstract ArrayList<String> getForms();

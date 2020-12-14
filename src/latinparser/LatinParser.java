@@ -11,6 +11,8 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import latinparser.words.Pronoun;
+
 /* TODO Dictionary Settings (#)
 
 DO_UNKNOWNS_ONLY
@@ -75,18 +77,18 @@ public class LatinParser {
 			"/bin/locatives.txt";
 	private static final String PLURALS = System.getProperty("user.dir")+
 			"/bin/plurals.txt";
-	private final static String KEYWORDS = " ut ne quod ubi postquam si cur "
+	private static final String KEYWORDS = " ut ne quod ubi postquam si cur "
 			+ "nisi sive seu unde quoniam quia simul etsi tamen qui quam quo ";
 	
-	public static String LOCS_CONTENTS;
-	public static String PLURALS_CONTENTS;
-	public static String PRONOUNS_CONTENTS;
+	private static String locsContents;
+	private static String pluralsContents;
+	private static String pronounsContents;
+	private static String[][] pronounLines = null;
 	
 	private static ArrayList<DictEntry> dict = new ArrayList<DictEntry>();
 	private static ArrayList<Clause> clauses;
 	private static String originalText; //retains punctuation w/o line breaks
 	
-	// TODO enable full translation
 	/* translate
 	 * divides the dictionary entries into clauses, then translates each clause
 	 */
@@ -106,8 +108,8 @@ public class LatinParser {
 	public static void parse(String rawInputFile) {
 		loadNeededFiles();
 		try {
-			originalText = getFile(rawInputFile).replaceAll("\r\n", " ");
-			originalText = originalText.replaceAll("  ", " ");
+			originalText = getFile(rawInputFile);
+			originalText = originalText.replaceAll("  |" + System.lineSeparator(), " ");
 		} catch (FileNotFoundException e) {
 			System.out.println("Fatal FileNotFoundException: "+ rawInputFile 
 					+" does not exist.");
@@ -129,28 +131,25 @@ public class LatinParser {
 	 */
 	private static void loadNeededFiles() {
 		try {
-			PRONOUNS_CONTENTS = getFile(PRONOUNS);
+			pronounsContents = getFile(PRONOUNS);
 		} catch (FileNotFoundException e) {
-			System.out.println("Error: Pronoun file "+ PRONOUNS 
-					+" does not exist");
+			System.out.println("Error: Pronoun file "+ PRONOUNS +" does not exist");
 			e.printStackTrace();
 			System.exit(1);
 		}
 		
 		try {
-			LOCS_CONTENTS = getFile(LOCS);
+			locsContents = getFile(LOCS);
 		} catch (FileNotFoundException e) {
-			System.out.println("Error: Locative file "+ LOCS 
-					+" does not exist");
+			System.out.println("Error: Locative file "+ LOCS +" does not exist");
 			e.printStackTrace();
 			System.exit(1);
 		}
 		
 		try {
-			PLURALS_CONTENTS = getFile(PLURALS);
+			pluralsContents = getFile(PLURALS);
 		} catch (FileNotFoundException e) {
-			System.out.println("Error: Plural file "+ PRONOUNS 
-					+" does not exist");
+			System.out.println("Error: Plural file "+ PRONOUNS +" does not exist");
 			e.printStackTrace();
 			System.exit(1);
 		}
@@ -177,11 +176,11 @@ public class LatinParser {
 		callWORDS(input);
 		try {
 			String dictgen = getFile(WORDSOUT).replaceAll("[*]", "");
-			String[] dictResult = dictgen.split("\r\n\r\n");
+			String lineFeeds = System.lineSeparator() + System.lineSeparator();
+			String[] dictResult = dictgen.split(lineFeeds);
 			createDictEntries(dictResult, words);
 		} catch (FileNotFoundException e) {
-			System.out.println("Fatal FileNotFoundException: " + WORDSOUT + 
-					"does not exist.");
+			System.out.println("Fatal FileNotFoundException: " + WORDSOUT + "does not exist.");
 			e.printStackTrace();
 			System.exit(1);
 		}
@@ -304,19 +303,48 @@ public class LatinParser {
 	public static boolean isKeyword(int idx) {
 		if (dict.get(idx).toString().equals("cum")) {
 			int isN = dict.get(idx+1).getWordIdx("N");
-			if (isN == -1 || !dict.get(idx+1).getWord(isN).canBe("ABL"))
+			if (isN == -1 || !dict.get(idx+1).getWord(isN).canBe("ABL")) {
 				return true;
+			}
 			return false;
 		// spaces added to protect against compound keywords
 		} else if (KEYWORDS.contains(" "+ dict.get(idx).toString() +" ")) {
 			return true;
+		} else if (!dict.get(idx).canBe("PRON")) {
+			return false;
 		}
-		String toCheck = "\r\n"+dict.get(idx).toString()+" ";
-		return LatinParser.PRONOUNS_CONTENTS.contains(toCheck);
+		Pronoun toCheck = (Pronoun) dict.get(idx).getWord("PRON");
+		return isPronounKeyword(toCheck);
 	}
 	
-	public static String getLocsContents() {return LOCS_CONTENTS;}
-	public static String getPluralsContents() {return PLURALS_CONTENTS;}
-	public static String getPronounsContents() {return PRONOUNS_CONTENTS;}
+	private static boolean isPronounKeyword(Pronoun p) {
+		String[][] pLines = getPronounLines();
+		for (int i = 0; i <= 5; i++) {
+			for (String line : pLines[i]) {
+				if (line.split(" ")[0].equals(p)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public static String[][] getPronounLines() {
+		if (pronounLines != null) {
+			return pronounLines;
+		}
+		String newline = System.lineSeparator();
+		String[] pronounSegments = pronounsContents.split(newline + newline);
+		String[][] lines = new String[pronounSegments.length][];
+		for (int i = 0; i < pronounSegments.length; i++) {
+			lines[i] = pronounSegments[i].split(newline);
+		}
+		pronounLines = lines;
+		return lines;
+	}
+	
+	public static String getLocsContents() {return locsContents;}
+	public static String getPluralsContents() {return pluralsContents;}
+	public static String getPronounsContents() {return pronounsContents;}
 	
 }

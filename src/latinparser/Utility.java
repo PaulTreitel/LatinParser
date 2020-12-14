@@ -1,15 +1,8 @@
 package latinparser;
 
-
-
 import java.util.ArrayList;
 
-/* UTILITY
- *  - ArrayList<DictEntry> getAdjectivesFor(DictEntry d)
- *  - boolean nounAdjUsable(String toCheck, String checkAgainst)
- *  - boolean isGenderMatch(String toCheck, String checkAgainst)
- *  - int getNumWordsOfForm(String part, String form)
- */
+
 public class Utility {
 	private ArrayList<DictEntry> dict;
 	private int start;

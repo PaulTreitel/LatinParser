@@ -2,7 +2,6 @@ package latinparser.words;
 
 
 import java.util.ArrayList;
-
 import latinparser.LatinParser;
 import latinparser.Utility;
 
@@ -21,33 +20,35 @@ public class Pronoun extends Word {
 	
 	/* addPossForm
 	 * loads pronoun contents from LatinParser file, then adds relevant ones
-	 * TODO how exactly does this work?
 	 */
 	public void addPossForm(String entry) {
-		String[] pronouns = LatinParser.getPronounsContents().split("\r\n\r\n");
-		if (!getForm(pronouns, word)) {
-			getForm(pronouns, word.substring(0, word.length()-3));
+		if (!getFormsFromFile(word)) {
+			// tries re-running it with an ending (eg -met, -nam, etc)
+			getFormsFromFile(word.substring(0, word.length()-3));
 		}
 	}
 	
-	private boolean getForm(String[] pronouns, String w) {
-		for (String p: pronouns) {
-			String[] lines = p.split("\r\n");
-			for (int i = 0; i < lines.length-2; i++) {
-				if (lines[i].split(" ")[0].equals(w)) {
-					possForms.add(lines[i].substring(lines[i].length()-7, lines[i].length()));
-					if (meaning.equals(""))
-						meaning = lines[lines.length-1];
-					if (part.equals("")) {
-						String[] parts = lines[lines.length-2].split(", ");
-						part = parts[parts.length-1];
-					}
+	private boolean getFormsFromFile(String w) {
+		String[][] allLines = LatinParser.getPronounLines();
+		boolean foundForms = false;
+		for (String[] currLines: allLines) {
+			int startingForms = possForms.size();
+			for (int i = 0; i < currLines.length-2; i++) {
+				String[] elements = currLines[i].split(" "); // [word, case, number, gender]
+				if (elements[0].equals(w)) {
+					String form = elements[1] +" "+ elements[2] +" "+ elements[3];
+					possForms.add(form);
 				}
 			}
-			if (!meaning.equals(""))
-				return true;
+			
+			if (possForms.size() > startingForms) {
+				meaning = currLines[currLines.length-1];
+				String[] parts = currLines[currLines.length-2].split(", ");
+				part = parts[parts.length-1];
+				foundForms = true;
+			}	
 		}
-		return false;
+		return foundForms;
 	}
 	
 	public String translate(String notes) {

@@ -83,7 +83,7 @@ public class Noun extends Word {
 	}
 	
 	private static String pluralize(String mean) {
-		for (String word: LatinParser.getPluralsContents().split("\r\n"))
+		for (String word: LatinParser.getPluralsContents().split(System.lineSeparator()))
 			if (word.split(" ")[0].equals(mean))
 				return word.split(" ")[1];
 		String two = mean.substring(mean.length()-2);

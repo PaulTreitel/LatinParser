@@ -2,23 +2,9 @@ package latinparser.wordassistant;
 
 
 import java.util.ArrayList;
-
 import latinparser.DictEntry;
 import latinparser.LatinParser;
 import latinparser.words.Word;
-
-/* VerbFinder
- *  - ArrayList<Integer> getVerbInfo()
- *  - ArrayList<Integer> findVerb()
- *  - ArrayList<Integer> stealVerb()
- *  - ArrayList<Integer> stealLaterVerb()
- *  - int getStartOfLastClause()
- *  - void setSubjectForms()
- *  - void setObjectForms
- *  - ArrayList<String> getSubjectForm()
- *  - ArrayList<String> getObjectForm()
- *  - char setClauseType()
- */
 
 //TODO overhaul with .getW() that isn't 0?
 public class VerbFinder {
@@ -37,7 +23,6 @@ public class VerbFinder {
 		upTo = tIdx;
 	}
 	
-	//TODO test getVerbInfo()
 	//TODO infinitives (indirect statement)?
 	//TODO make verb-borrowing conditional on there being a subj/obj not part of a list
 	/**

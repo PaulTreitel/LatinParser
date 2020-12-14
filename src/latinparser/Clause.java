@@ -62,7 +62,7 @@ public class Clause {
 			if (dict.get(i).getPunct() == ',' && i+1 != upTo) {
 				subclauses.add(new Clause(dict, s, i+1, true));
 				s = i+1;
-			} 
+			}
 		if (s != start) {
 			subclauses.add(new Clause(dict, s, upTo, true));
 		}

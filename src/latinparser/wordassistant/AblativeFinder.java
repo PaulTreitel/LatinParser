@@ -39,19 +39,19 @@ public class AblativeFinder {
 		//ABL of Comparison has noun associated with COMP ADJ, ABL of degree of difference is adverbial
 		ArrayList<DictEntry> comp = getAblativeOfComparison(); 
 		ablatives.addAll(comp.subList(0, comp.size()/2));
-		//System.out.println("A COMP: "+ ablatives);
+		//System.out.println("ABLATIVE COMPARISON: "+ ablatives);
 		
 		ablatives.addAll(getAblativeAbsolute());
-		//System.out.println("A ABSO: "+ ablatives);
+		//System.out.println("ABLATIVE ABSOLUTE: "+ ablatives);
 		
 		ablatives.addAll(getAblativeOfAgent(vIdx, preps));
-		//System.out.println("A AGNT: "+ ablatives);
+		//System.out.println("ABLATIVE AGENT: "+ ablatives);
 		
 		ablatives.addAll(getAblativeOfPlaceTime("PLACE"));
-		//System.out.println("A PLCE: "+ ablatives);
+		//System.out.println("ABLATIVE PLACE: "+ ablatives);
 		
 		ablatives.addAll(getAblativeOfPlaceTime("TIME"));
-		//System.out.println("A TIME: "+ ablatives);
+		//System.out.println("ABLATIVE TIME: "+ ablatives);
 		
 		//TODO ABL of separation
 		//TODO ABL of cause
@@ -92,7 +92,7 @@ public class AblativeFinder {
 	private boolean isAblativeWord(String mean, String[] abls, String construction) {
 		for (String use: abls)
 			if (use.contains(construction)) {
-				String[] meanings = use.split("\r\n");
+				String[] meanings = use.split(System.lineSeparator());
 				for (String m: meanings)
 					if (mean.contains(m))
 						return true;
@@ -106,7 +106,7 @@ public class AblativeFinder {
 			sc.useDelimiter("$^");
 			String lines = sc.next();
 			sc.close();
-			return lines.split("\r\n\r\n");
+			return lines.split(System.lineSeparator() + System.lineSeparator());
 		} catch (FileNotFoundException e) {
 			System.out.println("Ablative file "+ ABL_WORDS +" does not exist. Certain ablatives have been disabled.");
 			e.printStackTrace();

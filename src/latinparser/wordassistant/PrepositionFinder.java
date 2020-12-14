@@ -6,15 +6,6 @@ import latinparser.words.Preposition;
 import latinparser.DictEntry;
 import latinparser.Utility;
 
-/* PREPOSITION METHODS
- *  - ArrayList<DictEntry> findPrepositionPhrases()
- *  - ArrayList<DictEnty> getPrepObjects(int prepPos, String objPart)
- *  - boolean getRevisit()
- * USES
- *  - ArrayList<DictEntry> getAdjectivesFor(DictEntry d)
- *  - int getNumWordsOfForm(String part, String form)
- *  - boolean checkIfNounAdjUsable(String toCheck, String checkAgainst)
- */
 public class PrepositionFinder {
 	private Utility u;
 	private ArrayList<DictEntry> dict;
@@ -29,7 +20,6 @@ public class PrepositionFinder {
 		u = util;
 	}
 	
-	//TODO test findPrepositionPhrases()
 	/**
 	 * Finds prepositional phrases and adds them to a list of all prepositional
 	 * phrases and associated Words.

@@ -24,7 +24,7 @@ public class DictEntry {
 			punctuation = origin.charAt(origin.length()-1);
 		word = origin.toLowerCase().replaceAll(",|[.]|;|:|[?]|!", "");
 		
-		String[] b = entries.split(";\r\n");
+		String[] b = entries.split(";" + System.lineSeparator());
 		for (String eInput : b) {
 			eInput = eInput.strip();
 			if (!eInput.equals("")) {
